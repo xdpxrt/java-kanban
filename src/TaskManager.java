@@ -1,6 +1,12 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TaskManager {
+    private HashMap<Integer, Task> tasksList = new HashMap<>();
+    private HashMap<Integer, Epic> epicsList = new HashMap<>();
+    private HashMap<Integer, Subtask> subtasksList = new HashMap<>();
+
+
     Task task = new Task();
     Epic epic = new Epic();
     Subtask subtask = new Subtask();
@@ -8,27 +14,38 @@ public class TaskManager {
 
     void addTask(String taskName, String taskDescription) {
         Task task = new Task(taskName, taskDescription, taskId);
-        task.getTasksList().put(taskId++, task);
-        System.out.println(task);
+        tasksList.put(taskId++, task);
     }
 
     void addEpic(String taskName, String taskDescription) {
         ArrayList<Subtask> subtasksList = new ArrayList<>();
         Epic epic = new Epic(taskName, taskDescription, taskId, subtasksList);
-        epic.getEpicsList().put(taskId++, epic);
+        epicsList.put(taskId++, epic);
     }
 
     void addSubtask(String taskName, String taskDescription, int epicId) {
         Subtask subtask = new Subtask(taskName, taskDescription, taskId, epicId);
-        subtask.getSubtasksList().put(taskId, subtask);
-        epic.getEpicsList().get(epicId).getSubtasks().add(subtask);
+        subtasksList.put(taskId, subtask);
     }
 
     ArrayList<Task> allTasks() {
         ArrayList<Task> allTasks = new ArrayList<>();
-        for (int id : task.getTasksList().keySet()) {
-            allTasks.add(task.getTasksList().get(id));
+        for (int id : tasksList.keySet()) {
+            allTasks.add(tasksList.get(id));
         }
         return allTasks;
     }
+
+    void updateTask(int taskId, Task task) {
+        tasksList.put(taskId, task);
+    }
+
+    void updateEpic(int taskId, Epic epic) {
+        epicsList.put(taskId, epic);
+    }
+
+    void updateTask(int taskId, Subtask subtask) {
+        subtasksList.put(taskId, subtask);
+    }
 }
+

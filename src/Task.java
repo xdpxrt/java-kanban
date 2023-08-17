@@ -1,12 +1,8 @@
-import java.util.HashMap;
-
 public class Task {
     private String taskName;
     private String taskDescription;
     private int taskId;
-    private TaskStatus taskStatus = TaskStatus.NEW;
-
-    private HashMap<Integer, Task> tasksList = new HashMap<>();
+    TaskStatus taskStatus = TaskStatus.NEW;
 
 
     public Task(String taskName, String taskDescription, int taskId) {
@@ -14,7 +10,8 @@ public class Task {
         this.taskDescription = taskDescription;
         this.taskId = taskId;
     }
-    public Task(String taskName, String taskDescription, int taskId, TaskStatus taskStatus) {
+
+    public Task(int taskId, String taskName, String taskDescription, TaskStatus taskStatus) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskId = taskId;
@@ -26,28 +23,9 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Задача #" + taskId +
+        return "\nЗадача #" + taskId +
                 "\nНазвание задачи: " + '\'' + taskName + '\'' +
                 "\nОписание задачи: " + '\'' + taskDescription + '\'' +
                 "\nСтатус: " + taskStatus.getStatus();
     }
-
-    public HashMap<Integer, Task> getTasksList() {
-        return tasksList;
-    }
-
-    void removeTask(Integer taskId){
-        if (tasksList.get(taskId)!=null){
-            tasksList.remove(taskId);
-        }
-    }
-    Task getTask(int taskId){
-        return tasksList.get(taskId);
-    }
-
-
-
-
-
-
 }

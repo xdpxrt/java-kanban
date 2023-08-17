@@ -1,17 +1,15 @@
-import java.util.HashMap;
-
 public class Subtask extends Task {
-    private int epicID;
-
-     private HashMap<Integer, Subtask> subtasksList = new HashMap<>();
-
-    public Subtask(String taskName, String taskDescription, int taskId, int epicID) {
+    private int epicId;
+     public Subtask(String taskName, String taskDescription, int taskId, int epicId) {
         super(taskName, taskDescription, taskId);
-        this.epicID = epicID;
+        this.epicId = epicId;
     }
+
+    public Subtask(int taskId, String taskName, String taskDescription, TaskStatus taskStatus) {
+        super(taskName, taskDescription, taskId);
+        this.taskStatus = taskStatus;
+    }
+
     public Subtask() {
-    }
-        public HashMap<Integer, Subtask> getSubtasksList() {
-        return subtasksList;
     }
 }
