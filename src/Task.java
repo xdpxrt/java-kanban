@@ -14,6 +14,12 @@ public class Task {
         this.taskDescription = taskDescription;
         this.taskId = taskId;
     }
+    public Task(String taskName, String taskDescription, int taskId, TaskStatus taskStatus) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskId = taskId;
+        this.taskStatus = taskStatus;
+    }
 
     public Task() {
     }
@@ -30,8 +36,10 @@ public class Task {
         return tasksList;
     }
 
-    void removeTask(int taskId){
-        tasksList.remove(taskId);
+    void removeTask(Integer taskId){
+        if (tasksList.get(taskId)!=null){
+            tasksList.remove(taskId);
+        }
     }
     Task getTask(int taskId){
         return tasksList.get(taskId);
