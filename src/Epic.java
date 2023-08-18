@@ -1,24 +1,30 @@
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    private ArrayList<Subtask> subtasks;
-
-    public Epic(String taskName, String taskDescription, int taskId, ArrayList<Subtask> subtasksList) {
-        super(taskName, taskDescription, taskId);
-        this.subtasks = subtasksList;
-    }
-
-    public Epic(int taskId, String taskName, String taskDescription) {
-        super(taskName, taskDescription, taskId);
-    }
+    private ArrayList<Integer> subtasksKeysList = new ArrayList<>();
 
     public Epic() {
     }
 
+    public Epic(String taskName, String taskDescription) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+    }
+
     @Override
     public String toString() {
-        return "Epic{" +
-                "subtasks=" + subtasks +
-                '}';
+        return "\nЗадача #" + taskId +
+                "\nНазвание задачи: " + '\'' + taskName + '\'' +
+                "\nОписание задачи: " + '\'' + taskDescription + '\'' +
+                "\nКоличество подзадач: " + subtasksKeysList.size() +
+                "\nСтатус: " + taskStatus.getStatus();
+    }
+
+    public ArrayList<Integer> getSubtasksKeysList() {
+        return subtasksKeysList;
+    }
+
+    public void setSubtasksKeysList(ArrayList<Integer> subtasksKeysList) {
+        this.subtasksKeysList = subtasksKeysList;
     }
 }
