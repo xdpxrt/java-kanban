@@ -58,11 +58,13 @@ public class TaskManager {
         if (epicsList.containsKey(epicId)) {
             ArrayList<Task> subtasks = new ArrayList<>();
             for (int id : epicsList.get(epicId).getSubtasksKeysList()) {
-                subtasks.add(tasksList.get(id));
+                subtasks.add(subtasksList.get(id));
             }
-
+            return subtasks;
+        } else {
+            System.out.println("Такой задачи нет");
+            return null;
         }
-        return subtasks;
     }
 
     void removeAllTasks() {
