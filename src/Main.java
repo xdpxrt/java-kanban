@@ -24,10 +24,11 @@ public class Main {
         taskManager.addSubtask(2, subtask3);
         Subtask subtask2 = new Subtask("Выровнять участок", "Заказать трактор для выравнивания участка", TaskStatus.DONE);
         taskManager.updateSubtask(3, subtask2);
-        //Subtask subtask4 = new Subtask("Установить фундамент", "Вызвать бригаду по заливке фундамента", TaskStatus.IN_PROGRESS);
-        //taskManager.updateSubtask(4, subtask4);
-        //Subtask subtask5 = new Subtask("Установить септик", "Заказать установку септика");
-        //taskManager.addSubtask(2, subtask5);
+        Subtask subtask4 = new Subtask("Установить фундамент", "Вызвать бригаду по заливке фундамента", TaskStatus.IN_PROGRESS);
+        taskManager.updateSubtask(4, subtask4);
+        Subtask subtask5 = new Subtask("Установить септик", "Заказать установку септика");
+        taskManager.addSubtask(2, subtask5);
+
 
         System.out.println(taskManager.getTask(2));
     }

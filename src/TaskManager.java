@@ -5,9 +5,6 @@ public class TaskManager {
     private HashMap<Integer, Task> tasksList = new HashMap<>();
     private HashMap<Integer, Epic> epicsList = new HashMap<>();
     private HashMap<Integer, Subtask> subtasksList = new HashMap<>();
-    Task task = new Task();
-    Epic epic = new Epic();
-    Subtask subtask = new Subtask();
     int taskId = 1;
 
     void addTask(Task task) {
@@ -42,12 +39,6 @@ public class TaskManager {
         return allTasks;
     }
 
-    void removeAllTasks() {
-        tasksList.clear();
-        epicsList.clear();
-        subtasksList.clear();
-    }
-
     Task getTask(Integer taskId) {
         if (tasksList.containsKey(taskId)) {
             return tasksList.get(taskId);
@@ -62,6 +53,40 @@ public class TaskManager {
             return null;
         }
     }
+
+    ArrayList<Task> getSubtasksByEpic(Integer epicId) {
+        if (epicsList.containsKey(epicId)) {
+            ArrayList<Task> subtasks = new ArrayList<>();
+            for (int id : epicsList.get(epicId).getSubtasksKeysList()) {
+                subtasks.add(tasksList.get(id));
+            }
+
+        }
+        return subtasks;
+    }
+
+    void removeAllTasks() {
+        tasksList.clear();
+        epicsList.clear();
+        subtasksList.clear();
+        System.out.println("Все задачи удалены");
+    }
+
+    void removeTask(Integer taskId) {
+        if (tasksList.containsKey(taskId)) {
+            tasksList.remove(taskId);
+        }
+        if (subtasksList.containsKey(taskId)) {
+            subtasksList.remove(taskId);
+        }
+        if (epicsList.containsKey(taskId)) {
+            for (Integer task : epicsList.get(taskId).getSubtasksKeysList()) {
+                subtasksList.remove(task);
+            }
+            epicsList.remove(taskId);
+        } else System.out.println("Такой задачи нет");
+    }
+
 
     void updateTask(int taskId, Task task) {
         if (tasksList.containsKey(taskId)) {
@@ -88,24 +113,25 @@ public class TaskManager {
         } else System.out.println("Такой подзадачи нет");
     }
 
-    void checkEpicStatus(int epicId) {
-        boolean isDone = false;
+
+    private void checkEpicStatus(int epicId) {
+        int countNewTasks = 0;
+        int countDoneTasks = 0;
         for (Integer subtaskId : epicsList.get(epicId).getSubtasksKeysList()) {
-            if (subtasksList.get(subtaskId).taskStatus.equals(TaskStatus.IN_PROGRESS)) {
-                epicsList.get(epicId).taskStatus = TaskStatus.IN_PROGRESS;
-                isDone = false;
-                break;
-            }
             if (subtasksList.get(subtaskId).taskStatus.equals(TaskStatus.NEW)) {
-                isDone = false;
+                ++countNewTasks;
             }
             if (subtasksList.get(subtaskId).taskStatus.equals(TaskStatus.DONE)) {
-                isDone = true;
+                ++countDoneTasks;
             }
         }
-        if (isDone) {
+        if (epicsList.get(epicId).getSubtasksKeysList().isEmpty()
+                || countNewTasks == epicsList.get(epicId).getSubtasksKeysList().size()) {
+            epicsList.get(epicId).taskStatus = TaskStatus.NEW;
+        } else if (countDoneTasks == epicsList.get(epicId).getSubtasksKeysList().size()) {
             epicsList.get(epicId).taskStatus = TaskStatus.DONE;
-        }
+        } else epicsList.get(epicId).taskStatus = TaskStatus.IN_PROGRESS;
     }
 }
+
 
