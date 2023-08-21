@@ -15,16 +15,16 @@ public class Task {
         this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 
     public TaskStatus getTaskStatus() {
         return taskStatus;
-    }
-
-    public int getId() {
-        return id;
     }
 
     @Override

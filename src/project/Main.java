@@ -23,15 +23,15 @@ public class Main {
         System.out.println(taskManager.getSubtasksByEpic(1));
         System.out.println(taskManager.getSubtasksByEpic(3));
 
-        taskManager.updateSubtask(TaskStatus.DONE,
-                new Subtask(2, "Расписание", "Составить расписание беговых тренировок"));
+        taskManager.updateSubtask(2, TaskStatus.DONE,
+                new Subtask("Расписание", "Составить расписание беговых тренировок"));
 
         System.out.println(taskManager.getTask(2));
 
-        taskManager.updateSubtask(TaskStatus.DONE,
-                new Subtask(4, "Выровнять участок", "Заказать трактор для выравнивания участка"));
-        taskManager.updateSubtask(TaskStatus.IN_PROGRESS,
-                new Subtask(5, "Установить фундамент", "Вызвать бригаду по заливке фундамента"));
+        taskManager.updateSubtask(4, TaskStatus.DONE,
+                new Subtask("Выровнять участок", "Заказать трактор для выравнивания участка"));
+        taskManager.updateSubtask(5, TaskStatus.IN_PROGRESS,
+                new Subtask("Установить фундамент", "Вызвать бригаду по заливке фундамента"));
         taskManager.updateTask(6, TaskStatus.IN_PROGRESS,
                 new Task("Новая работа", "Пройти курс по JAVA-разработке и найти новую работу"));
 

@@ -128,12 +128,12 @@ public class TaskManager {
         }
     }
 
-    public void updateSubtask(TaskStatus status, Subtask subtask) {
-        if (subtasksList.containsKey(subtask.getId())) {
-            int epicId = subtasksList.get(subtask.getId()).getEpicId();
+    public void updateSubtask(int taskId, TaskStatus status, Subtask subtask) {
+        if (subtasksList.containsKey(taskId)) {
+            int epicId = subtasksList.get(taskId).getEpicId();
             subtask.setEpicId(epicId);
             subtask.setTaskStatus(status);
-            subtasksList.put(subtask.getId(), subtask);
+            subtasksList.put(taskId, subtask);
             System.out.println("\nПодадача #" + subtask.getId() + " обновлена");
             checkEpicStatus(epicId);
         } else {
