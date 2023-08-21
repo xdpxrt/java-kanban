@@ -27,8 +27,8 @@ public class TaskManager {
                 epicsList.get(epicId).getSubtasksKeysList().add(taskId);
                 subtasksList.put(taskId++, subtask);
                 System.out.println("\nСоздана: " + subtask);
-            } else System.out.println("Задача уже выполнена");
-        } else System.out.println("Такой задачи нет");
+            } else System.out.println("\nЗадача уже выполнена");
+        } else System.out.println("\nТакой задачи нет");
     }
 
     ArrayList<Task> getAllTasks() {
@@ -40,7 +40,7 @@ public class TaskManager {
             allTasks.add(epicsList.get(id));
         }
         if (allTasks.isEmpty()) {
-            System.out.println("Задач нет");
+            System.out.println("\nЗадач нет");
             return null;
         } else
             return allTasks;
@@ -56,7 +56,7 @@ public class TaskManager {
         if (subtasksList.containsKey(taskId)) {
             return subtasksList.get(taskId);
         } else {
-            System.out.println("Такой задачи нет");
+            System.out.println("\nТакой задачи нет");
             return null;
         }
     }
@@ -69,7 +69,7 @@ public class TaskManager {
             }
             return subtasks;
         } else {
-            System.out.println("Такой задачи нет");
+            System.out.println("\nТакой задачи нет");
             return null;
         }
     }
@@ -78,23 +78,23 @@ public class TaskManager {
         tasksList.clear();
         epicsList.clear();
         subtasksList.clear();
-        System.out.println("Все задачи удалены");
+        System.out.println("\nВсе задачи удалены");
     }
 
     void removeTask(Integer taskId) {
         if (tasksList.containsKey(taskId)) {
             tasksList.remove(taskId);
-            System.out.println("Задача #" + taskId + " удалена");
+            System.out.println("\nЗадача #" + taskId + " удалена");
         } else if (subtasksList.containsKey(taskId)) {
             subtasksList.remove(taskId);
-            System.out.println("Задача #" + taskId + " удалена");
+            System.out.println("\nЗадача #" + taskId + " удалена");
         } else if (epicsList.containsKey(taskId)) {
             for (Integer task : epicsList.get(taskId).getSubtasksKeysList()) {
                 subtasksList.remove(task);
             }
             epicsList.remove(taskId);
-            System.out.println("Задача #" + taskId + " удалена");
-        } else System.out.println("Такой задачи нет");
+            System.out.println("\nЗадача #" + taskId + " удалена");
+        } else System.out.println("\nТакой задачи нет");
     }
 
     void updateTask(int taskId, TaskStatus taskStatus, Task task) {
@@ -102,8 +102,8 @@ public class TaskManager {
             task.setTaskId(taskId);
             task.setTaskStatus(taskStatus);
             tasksList.put(taskId, task);
-            System.out.println("Задача #" + taskId + " обновлена");
-        } else System.out.println("Такой задачи нет");
+            System.out.println("\nЗадача #" + taskId + " обновлена");
+        } else System.out.println("\nТакой задачи нет");
     }
 
     void updateEpic(int taskId, Epic epic) {
@@ -111,8 +111,8 @@ public class TaskManager {
             epic.setSubtasksKeysList(epicsList.get(taskId).getSubtasksKeysList());
             epic.setTaskId(taskId);
             epicsList.put(taskId, epic);
-            System.out.println("Задача #" + taskId + " обновлена");
-        } else System.out.println("Такой задачи нет");
+            System.out.println("\nЗадача #" + taskId + " обновлена");
+        } else System.out.println("\nТакой задачи нет");
     }
 
     void updateSubtask(int taskId, TaskStatus taskStatus, Subtask subtask) {
@@ -124,8 +124,7 @@ public class TaskManager {
             subtasksList.put(taskId, subtask);
             System.out.println("\nПодадача #" + taskId + " обновлена");
             checkEpicStatus(epicId);
-
-        } else System.out.println("Такой подзадачи нет");
+        } else System.out.println("\nТакой подзадачи нет");
     }
 
     private void checkEpicStatus(int epicId) {
