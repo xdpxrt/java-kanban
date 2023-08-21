@@ -1,4 +1,4 @@
-package task;
+package project.task;
 
 public class Task {
     protected String name;
@@ -21,6 +21,10 @@ public class Task {
 
     public TaskStatus getTaskStatus() {
         return taskStatus;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

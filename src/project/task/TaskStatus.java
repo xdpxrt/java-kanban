@@ -1,4 +1,4 @@
-package task;
+package project.task;
 
 public enum TaskStatus {
     NEW("Новая"),
