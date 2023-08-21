@@ -2,7 +2,7 @@ public class Task {
     protected String taskName;
     protected String taskDescription;
     protected int taskId;
-    TaskStatus taskStatus = TaskStatus.NEW;
+    protected TaskStatus taskStatus = TaskStatus.NEW;
 
     public Task() {
     }
@@ -10,11 +10,6 @@ public class Task {
     public Task(String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
-    }
-    public Task(String taskName, String taskDescription, TaskStatus taskStatus) {
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-        this.taskStatus = taskStatus;
     }
 
     @Override
@@ -27,5 +22,9 @@ public class Task {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public void setTaskStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
     }
 }

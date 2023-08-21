@@ -10,11 +10,13 @@ public class TaskManager {
     void addTask(Task task) {
         task.setTaskId(taskId);
         tasksList.put(taskId++, task);
+        System.out.println("\nСоздана: " + task);
     }
 
     void addEpic(Epic epic) {
         epic.setTaskId(taskId);
         epicsList.put(taskId++, epic);
+        System.out.println("\nСоздана: " + epic);
     }
 
     void addSubtask(Integer epicId, Subtask subtask) {
@@ -24,6 +26,7 @@ public class TaskManager {
                 subtask.setEpicId(epicId);
                 epicsList.get(epicId).getSubtasksKeysList().add(taskId);
                 subtasksList.put(taskId++, subtask);
+                System.out.println("\nСоздана: " + subtask);
             } else System.out.println("Задача уже выполнена");
         } else System.out.println("Такой задачи нет");
     }
@@ -36,7 +39,11 @@ public class TaskManager {
         for (int id : epicsList.keySet()) {
             allTasks.add(epicsList.get(id));
         }
-        return allTasks;
+        if (allTasks.isEmpty()) {
+            System.out.println("Задач нет");
+            return null;
+        } else
+            return allTasks;
     }
 
     Task getTask(Integer taskId) {
@@ -77,23 +84,25 @@ public class TaskManager {
     void removeTask(Integer taskId) {
         if (tasksList.containsKey(taskId)) {
             tasksList.remove(taskId);
-        }
-        if (subtasksList.containsKey(taskId)) {
+            System.out.println("Задача #" + taskId + " удалена");
+        } else if (subtasksList.containsKey(taskId)) {
             subtasksList.remove(taskId);
-        }
-        if (epicsList.containsKey(taskId)) {
+            System.out.println("Задача #" + taskId + " удалена");
+        } else if (epicsList.containsKey(taskId)) {
             for (Integer task : epicsList.get(taskId).getSubtasksKeysList()) {
                 subtasksList.remove(task);
             }
             epicsList.remove(taskId);
+            System.out.println("Задача #" + taskId + " удалена");
         } else System.out.println("Такой задачи нет");
     }
 
-
-    void updateTask(int taskId, Task task) {
+    void updateTask(int taskId, TaskStatus taskStatus, Task task) {
         if (tasksList.containsKey(taskId)) {
             task.setTaskId(taskId);
+            task.setTaskStatus(taskStatus);
             tasksList.put(taskId, task);
+            System.out.println("Задача #" + taskId + " обновлена");
         } else System.out.println("Такой задачи нет");
     }
 
@@ -102,19 +111,22 @@ public class TaskManager {
             epic.setSubtasksKeysList(epicsList.get(taskId).getSubtasksKeysList());
             epic.setTaskId(taskId);
             epicsList.put(taskId, epic);
+            System.out.println("Задача #" + taskId + " обновлена");
         } else System.out.println("Такой задачи нет");
     }
 
-    void updateSubtask(int taskId, Subtask subtask) {
+    void updateSubtask(int taskId, TaskStatus taskStatus, Subtask subtask) {
         if (subtasksList.containsKey(taskId)) {
             int epicId = subtasksList.get(taskId).getEpicId();
             subtask.setEpicId(epicId);
             subtask.setTaskId(taskId);
+            subtask.setTaskStatus(taskStatus);
             subtasksList.put(taskId, subtask);
+            System.out.println("\nПодадача #" + taskId + " обновлена");
             checkEpicStatus(epicId);
+
         } else System.out.println("Такой подзадачи нет");
     }
-
 
     private void checkEpicStatus(int epicId) {
         int countNewTasks = 0;

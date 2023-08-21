@@ -3,9 +3,6 @@ import java.util.ArrayList;
 public class Epic extends Task {
     private ArrayList<Integer> subtasksKeysList = new ArrayList<>();
 
-    public Epic() {
-    }
-
     public Epic(String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
