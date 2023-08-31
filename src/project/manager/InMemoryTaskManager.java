@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final static HashMap<Integer, Task> tasksList = new HashMap<>();
-    private final static HashMap<Integer, Epic> epicsList = new HashMap<>();
-    private final static HashMap<Integer, Subtask> subtasksList = new HashMap<>();
+    private static HashMap<Integer, Task> tasksList = new HashMap<>();
+    private static HashMap<Integer, Epic> epicsList = new HashMap<>();
+    private static HashMap<Integer, Subtask> subtasksList = new HashMap<>();
     private static int id = 1;
 
     @Override
@@ -176,6 +176,4 @@ public class InMemoryTaskManager implements TaskManager {
             epicsList.get(epicId).setTaskStatus(TaskStatus.IN_PROGRESS);
         }
     }
-
-
 }
