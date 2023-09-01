@@ -26,6 +26,8 @@ public interface TaskManager {
     void updateEpic(int taskId, Epic epic);
 
     void updateSubtask(int taskId, TaskStatus status, Subtask subtask);
+
+    HistoryManager getHistoryManager();
 }
 
 

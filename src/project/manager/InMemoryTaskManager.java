@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
+    private final HistoryManager historyManager = Managers.getDefaultHistoryManager();
     private final Map<Integer, Task> tasksList = new HashMap<>();
     private final Map<Integer, Epic> epicsList = new HashMap<>();
     private final Map<Integer, Subtask> subtasksList = new HashMap<>();
@@ -62,15 +67,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTask(Integer taskId) {
         if (tasksList.containsKey(taskId)) {
-            Managers.getDefaultHistoryManager().addToHistoryList(tasksList.get(taskId));
+            historyManager.addToHistoryList(tasksList.get(taskId));
             return tasksList.get(taskId);
         }
         if (epicsList.containsKey(taskId)) {
-            Managers.getDefaultHistoryManager().addToHistoryList(epicsList.get(taskId));
+            historyManager.addToHistoryList(epicsList.get(taskId));
             return epicsList.get(taskId);
         }
         if (subtasksList.containsKey(taskId)) {
-            Managers.getDefaultHistoryManager().addToHistoryList(subtasksList.get(taskId));
+            historyManager.addToHistoryList(subtasksList.get(taskId));
             return subtasksList.get(taskId);
         } else {
             System.out.println("\nТакой задачи нет");
