@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private static Map<Integer, Task> tasksList = new HashMap<>();
-    private static Map<Integer, Epic> epicsList = new HashMap<>();
-    private static Map<Integer, Subtask> subtasksList = new HashMap<>();
+    private final Map<Integer, Task> tasksList = new HashMap<>();
+    private final Map<Integer, Epic> epicsList = new HashMap<>();
+    private final Map<Integer, Subtask> subtasksList = new HashMap<>();
     private static int id = 1;
 
     @Override
@@ -62,15 +62,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTask(Integer taskId) {
         if (tasksList.containsKey(taskId)) {
-            Managers.getDefaultHistory().addToHistoryList(tasksList.get(taskId));
+            Managers.getDefaultHistoryManager().addToHistoryList(tasksList.get(taskId));
             return tasksList.get(taskId);
         }
         if (epicsList.containsKey(taskId)) {
-            Managers.getDefaultHistory().addToHistoryList(epicsList.get(taskId));
+            Managers.getDefaultHistoryManager().addToHistoryList(epicsList.get(taskId));
             return epicsList.get(taskId);
         }
         if (subtasksList.containsKey(taskId)) {
-            Managers.getDefaultHistory().addToHistoryList(subtasksList.get(taskId));
+            Managers.getDefaultHistoryManager().addToHistoryList(subtasksList.get(taskId));
             return subtasksList.get(taskId);
         } else {
             System.out.println("\nТакой задачи нет");

@@ -1,11 +1,14 @@
 package project.manager;
 
 public class Managers {
+    private static TaskManager taskManager = new InMemoryTaskManager();
+    private static HistoryManager historyManager = new InMemoryHistoryManager();
+
     public static TaskManager getDefault() {
-        return new InMemoryTaskManager();
+        return taskManager;
     }
 
-    public static HistoryManager getDefaultHistory() {
-        return new InMemoryHistoryManager();
+    public static HistoryManager getDefaultHistoryManager() {
+        return historyManager;
     }
 }

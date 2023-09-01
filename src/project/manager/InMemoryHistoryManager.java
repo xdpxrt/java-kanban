@@ -7,7 +7,7 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int HISTORY_LIMIT = 10;
-    private static List<Task> historyList = new ArrayList<>(HISTORY_LIMIT);
+    private final List<Task> historyList = new ArrayList<>(HISTORY_LIMIT);
 
     @Override
     public void addToHistoryList(Task task) {
@@ -19,7 +19,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        System.out.println("Последние просмотренные задачи: ");
-        return historyList;
+        System.out.println("\nПоследние просмотренные задачи: ");
+        return new ArrayList<>(historyList);
     }
 }

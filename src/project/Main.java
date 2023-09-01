@@ -38,6 +38,6 @@ public class Main {
         System.out.println(Managers.getDefault().getTask(2));
         System.out.println(Managers.getDefault().getTask(3));
 
-        System.out.println(Managers.getDefaultHistory().getHistory());
+        System.out.println(Managers.getDefaultHistoryManager().getHistory());
     }
 }
