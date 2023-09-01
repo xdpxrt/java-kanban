@@ -2,7 +2,7 @@ package project.manager;
 
 import project.task.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     void addTask(Task task);
@@ -11,11 +11,11 @@ public interface TaskManager {
 
     void addSubtask(Subtask subtask);
 
-    ArrayList<Task> getAllTasks();
+    List<Task> getAllTasks();
 
     Task getTask(Integer taskId);
 
-    ArrayList<Task> getSubtasksByEpic(Integer epicId);
+    List<Task> getSubtasksByEpic(Integer epicId);
 
     void removeAllTasks();
 

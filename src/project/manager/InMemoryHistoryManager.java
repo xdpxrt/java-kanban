@@ -7,7 +7,7 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int HISTORY_LIMIT = 10;
-    private final static List<Task> historyList = new ArrayList<>(HISTORY_LIMIT);
+    private static List<Task> historyList = new ArrayList<>(HISTORY_LIMIT);
 
     @Override
     public void addToHistoryList(Task task) {

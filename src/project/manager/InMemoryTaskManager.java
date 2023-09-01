@@ -4,11 +4,13 @@ import project.task.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private static HashMap<Integer, Task> tasksList = new HashMap<>();
-    private static HashMap<Integer, Epic> epicsList = new HashMap<>();
-    private static HashMap<Integer, Subtask> subtasksList = new HashMap<>();
+    private static Map<Integer, Task> tasksList = new HashMap<>();
+    private static Map<Integer, Epic> epicsList = new HashMap<>();
+    private static Map<Integer, Subtask> subtasksList = new HashMap<>();
     private static int id = 1;
 
     @Override
@@ -41,8 +43,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getAllTasks() {
-        ArrayList<Task> allTasks = new ArrayList<>();
+    public List<Task> getAllTasks() {
+        List<Task> allTasks = new ArrayList<>();
         for (int taskId : tasksList.keySet()) {
             allTasks.add(tasksList.get(taskId));
         }
@@ -78,9 +80,9 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public ArrayList<Task> getSubtasksByEpic(Integer epicId) {
+    public List<Task> getSubtasksByEpic(Integer epicId) {
         if (epicsList.containsKey(epicId)) {
-            ArrayList<Task> subtasks = new ArrayList<>();
+            List<Task> subtasks = new ArrayList<>();
             for (int taskId : epicsList.get(epicId).getSubtasksKeysList()) {
                 subtasks.add(subtasksList.get(taskId));
             }
