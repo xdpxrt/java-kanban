@@ -1,25 +1,27 @@
 package project.manager;
 
+import project.manager.util.CustomLinkedList;
 import project.task.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int HISTORY_LIMIT = 10;
-    private final List<Task> historyList = new ArrayList<>(HISTORY_LIMIT);
+    private final CustomLinkedList<Task> historyList = new CustomLinkedList<>();
 
     @Override
-    public void addToHistoryList(Task task) {
-        if (historyList.size() >= HISTORY_LIMIT) {
-            historyList.remove(0);
-        }
-        historyList.add(task);
+    public void addToHistory(Task task) {
+        historyList.linkLast(task);
+    }
+
+    @Override
+    public void remove(int id) {
+
     }
 
     @Override
     public List<Task> getHistory() {
         System.out.println("\nПоследние просмотренные задачи: ");
-        return new ArrayList<>(historyList);
+        return new ArrayList<>(historyList.getTasks());
     }
 }

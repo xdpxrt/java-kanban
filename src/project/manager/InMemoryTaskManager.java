@@ -67,15 +67,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTask(Integer taskId) {
         if (tasksList.containsKey(taskId)) {
-            historyManager.addToHistoryList(tasksList.get(taskId));
+            historyManager.addToHistory(tasksList.get(taskId));
             return tasksList.get(taskId);
         }
         if (epicsList.containsKey(taskId)) {
-            historyManager.addToHistoryList(epicsList.get(taskId));
+            historyManager.addToHistory(epicsList.get(taskId));
             return epicsList.get(taskId);
         }
         if (subtasksList.containsKey(taskId)) {
-            historyManager.addToHistoryList(subtasksList.get(taskId));
+            historyManager.addToHistory(subtasksList.get(taskId));
             return subtasksList.get(taskId);
         } else {
             System.out.println("\nТакой задачи нет");
