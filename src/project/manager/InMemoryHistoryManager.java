@@ -1,6 +1,7 @@
 package project.manager;
 
 import project.manager.util.CustomLinkedList;
+import project.manager.util.Node;
 import project.task.Task;
 
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-
+        Node<Task> node = historyList.getNode(id);
+        historyList.removeNode(node);
     }
 
     @Override
