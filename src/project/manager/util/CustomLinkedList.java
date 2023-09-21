@@ -2,7 +2,6 @@ package project.manager.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import project.task.Task;
 
@@ -19,7 +18,7 @@ public class CustomLinkedList<T extends Task> {
         tail = newNode;
         if (oldTail == null) {
             head = newNode;
-        } else oldTail.next = newNode;
+        } else oldTail.setNext(newNode);
         size++;
         if (tasksMap.containsKey(task.getId())) {
             removeNode(tasksMap.get(task.getId()));
@@ -34,29 +33,33 @@ public class CustomLinkedList<T extends Task> {
     public ArrayList<Task> getTasks() {
         ArrayList<Task> historyList = new ArrayList<>();
         Node<Task> node = head;
-        Task task = head.data;
-        while (task != null) {
-            historyList.add(task);
-            node = node.next;
-            if (node != null) {
-                task = node.data;
-            } else task = null;
+        if (head != null) {
+            Task task = head.getData();
+            while (task != null) {
+                historyList.add(task);
+                node = node.getNext();
+                if (node != null) {
+                    task = node.getData();
+                } else task = null;
+            }
         }
         return historyList;
     }
 
     public void removeNode(Node<Task> node) {
-        Node<Task> prevNode = node.prev;
-        Node<Task> nextNode = node.next;
+        if (node == null) return;
+        Node<Task> prevNode = node.getPrev();
+        Node<Task> nextNode = node.getNext();
         if (prevNode != null) {
-            prevNode.next = nextNode;
+            prevNode.setNext(nextNode);
         } else {
             head = nextNode;
         }
-        if (nextNode != null){
-            nextNode.prev = prevNode;
+        if (nextNode != null) {
+            nextNode.setPrev(prevNode);
         } else {
             tail = prevNode;
         }
+        size--;
     }
 }

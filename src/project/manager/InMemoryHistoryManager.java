@@ -16,14 +16,20 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void remove(int id) {
+    public void removeFromHistory(int id) {
         Node<Task> node = historyList.getNode(id);
         historyList.removeNode(node);
     }
 
     @Override
     public List<Task> getHistory() {
-        System.out.println("\nПоследние просмотренные задачи: ");
-        return new ArrayList<>(historyList.getTasks());
+        List<Task> history = new ArrayList<>(historyList.getTasks());
+        if (history.isEmpty()) {
+            System.out.println("\nСписок просмотренных задач пуст");
+            return null;
+        } else {
+            System.out.println("\nПоследние просмотренные задачи: ");
+            return history;
+        }
     }
 }

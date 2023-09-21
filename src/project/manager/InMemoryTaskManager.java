@@ -110,15 +110,19 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeTask(Integer taskId) {
         if (tasksList.containsKey(taskId)) {
             tasksList.remove(taskId);
+            historyManager.removeFromHistory(taskId);
             System.out.println("\nЗадача #" + taskId + " удалена");
         } else if (subtasksList.containsKey(taskId)) {
             subtasksList.remove(taskId);
+            historyManager.removeFromHistory(taskId);
             System.out.println("\nЗадача #" + taskId + " удалена");
         } else if (epicsList.containsKey(taskId)) {
             for (Integer task : epicsList.get(taskId).getSubtasksKeysList()) {
                 subtasksList.remove(task);
+                historyManager.removeFromHistory(task);
             }
             epicsList.remove(taskId);
+            historyManager.removeFromHistory(taskId);
             System.out.println("\nЗадача #" + taskId + " удалена");
         } else {
             System.out.println("\nТакой задачи нет");

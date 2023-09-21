@@ -41,5 +41,10 @@ public class Main {
         System.out.println(taskManager.getTask(2));
         System.out.println(historyManager.getHistory());
 
+        taskManager.removeTask(5);
+        System.out.println(historyManager.getHistory());
+
+        taskManager.removeTask(1);
+        System.out.println(historyManager.getHistory());
     }
 }
