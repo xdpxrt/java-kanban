@@ -2,15 +2,14 @@ package project.manager.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import project.task.Task;
 
 public class CustomLinkedList<T extends Task> {
+    private final Map<Integer, Node<Task>> tasksMap = new HashMap<>();
     private Node<Task> head;
     private Node<Task> tail;
-    private int size = 0;
-
-    private final HashMap<Integer, Node<Task>> tasksMap = new HashMap<>();
 
     public void linkLast(Task task) {
         Node<Task> oldTail = tail;
@@ -19,7 +18,6 @@ public class CustomLinkedList<T extends Task> {
         if (oldTail == null) {
             head = newNode;
         } else oldTail.setNext(newNode);
-        size++;
         if (tasksMap.containsKey(task.getId())) {
             removeNode(tasksMap.get(task.getId()));
         }
@@ -60,6 +58,5 @@ public class CustomLinkedList<T extends Task> {
         } else {
             tail = prevNode;
         }
-        size--;
     }
 }
