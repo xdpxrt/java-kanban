@@ -5,7 +5,6 @@ public class Task {
     protected String description;
     protected int id;
     protected TaskStatus taskStatus = TaskStatus.NEW;
-    private final TaskType type = TaskType.TASK;
 
     public Task(String name, String description) {
         this.name = name;
@@ -28,13 +27,17 @@ public class Task {
         return taskStatus;
     }
 
+    public TaskType getTaskType() {
+        return TaskType.TASK;
+    }
+
     public String toStringForBack() {
-        return String.join(",", String.valueOf(id), type.name(), name, taskStatus.name(), description);
+        return String.join(",", String.valueOf(id), getTaskType().name(), name, taskStatus.name(), description);
     }
 
     @Override
     public String toString() {
-        return "\n" + type + " #" + id +
+        return "\n" + getTaskType() + " #" + id +
                 "\nНазвание: " + '\'' + name + '\'' +
                 "\nОписание: " + '\'' + description + '\'' +
                 "\nСтатус: " + taskStatus;
