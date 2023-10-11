@@ -1,8 +1,6 @@
 package project.manager.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import project.task.Task;
 
@@ -58,5 +56,9 @@ public class CustomLinkedList<T extends Task> {
         } else {
             tail = prevNode;
         }
+    }
+
+    public void removeAll() {
+        head = null;
     }
 }

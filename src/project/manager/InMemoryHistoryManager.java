@@ -8,7 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final CustomLinkedList<Task> historyList = new CustomLinkedList<>();
+    private CustomLinkedList<Task> historyList = new CustomLinkedList<>();
+
+    @Override
+    public void setHistoryList(CustomLinkedList<Task> historyList) {
+        this.historyList = historyList;
+    }
 
     @Override
     public void addToHistory(Task task) {
@@ -24,12 +29,15 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         List<Task> history = new ArrayList<>(historyList.getTasks());
-        if (history.isEmpty()) {
-            System.out.println("\nСписок просмотренных задач пуст");
-            return null;
-        } else {
-            System.out.println("\nПоследние просмотренные задачи: ");
+        if (!history.isEmpty()) {
             return history;
+        } else {
+            return new ArrayList<>();
         }
+    }
+
+    @Override
+    public void removeHistory() {
+        historyList.removeAll();
     }
 }

@@ -1,6 +1,7 @@
 package project.task;
 
 public class Subtask extends Task {
+    private final TaskType type = TaskType.SUBTASK;
     private int epicId;
 
     public Subtask(String name, String description, int epicId) {
@@ -19,12 +20,15 @@ public class Subtask extends Task {
     public int getEpicId() {
         return epicId;
     }
+    public String toStringForBack() {
+        return String.join(",", String.valueOf(id), type.name(), name, taskStatus.name(), description, String.valueOf(epicId));
+    }
 
     @Override
     public String toString() {
-        return "\nПодзадача #" + id + " к задаче #" + epicId +
+        return "\n" + type + " #" + id + " к эпику #" + epicId +
                 "\nНазвание задачи: " + '\'' + name + '\'' +
                 "\nОписание задачи: " + '\'' + description + '\'' +
-                "\nСтатус: " + taskStatus.getStatus();
+                "\nСтатус: " + taskStatus;
     }
 }

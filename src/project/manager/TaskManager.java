@@ -28,6 +28,8 @@ public interface TaskManager {
     void updateSubtask(int taskId, TaskStatus status, Subtask subtask);
 
     HistoryManager getHistoryManager();
+
+    List<Task> getSortedList();
 }
 
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-
+    private final TaskType type = TaskType.EPIC;
     private List<Integer> subtasksKeysList = new ArrayList<>();
 
     public Epic(String name, String description) {
@@ -19,12 +19,16 @@ public class Epic extends Task {
         this.subtasksKeysList = subtasksKeysList;
     }
 
+    public String toStringForBack() {
+        return String.join(",", String.valueOf(id), type.name(), name, taskStatus.name(), description);
+    }
+
     @Override
     public String toString() {
-        return "\nЗадача #" + id +
-                "\nНазвание задачи: " + '\'' + name + '\'' +
-                "\nОписание задачи: " + '\'' + description + '\'' +
+        return "\n" + type + " #" + id +
+                "\nНазвание: " + '\'' + name + '\'' +
+                "\nОписание: " + '\'' + description + '\'' +
                 "\nКоличество подзадач: " + subtasksKeysList.size() +
-                "\nСтатус: " + taskStatus.getStatus();
+                "\nСтатус: " + taskStatus;
     }
 }

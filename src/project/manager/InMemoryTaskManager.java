@@ -2,18 +2,27 @@ package project.manager;
 
 import project.task.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private final HistoryManager historyManager = Managers.getDefaultHistoryManager();
-    private final Map<Integer, Task> tasksList = new HashMap<>();
-    private final Map<Integer, Epic> epicsList = new HashMap<>();
-    private final Map<Integer, Subtask> subtasksList = new HashMap<>();
+    private HistoryManager historyManager = Managers.getDefaultHistoryManager();
+    private Map<Integer, Task> tasksList = new HashMap<>();
+    private Map<Integer, Epic> epicsList = new HashMap<>();
+    private Map<Integer, Subtask> subtasksList = new HashMap<>();
     private static int id = 1;
+
+    public InMemoryTaskManager() {
+    }
+
+    public InMemoryTaskManager(Map<Integer, Task> taskList, Map<Integer, Epic> epicList
+            , Map<Integer, Subtask> subtaskList, HistoryManager historyManager, int id) {
+        this.tasksList = taskList;
+        this.epicsList = epicList;
+        this.subtasksList = subtaskList;
+        this.historyManager = historyManager;
+        this.id = id;
+    }
 
     public HistoryManager getHistoryManager() {
         return historyManager;
@@ -57,6 +66,9 @@ public class InMemoryTaskManager implements TaskManager {
         for (int taskId : epicsList.keySet()) {
             allTasks.add(epicsList.get(taskId));
         }
+        for (int taskId : subtasksList.keySet()) {
+            allTasks.add(subtasksList.get(taskId));
+        }
         if (allTasks.isEmpty()) {
             System.out.println("\nЗадач нет");
             return null;
@@ -90,12 +102,13 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicsList.containsKey(epicId)) {
             List<Task> subtasks = new ArrayList<>();
             for (int taskId : epicsList.get(epicId).getSubtasksKeysList()) {
+                historyManager.addToHistory(subtasksList.get(taskId));
                 subtasks.add(subtasksList.get(taskId));
             }
             return subtasks;
         } else {
             System.out.println("\nТакой задачи нет");
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -104,6 +117,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasksList.clear();
         epicsList.clear();
         subtasksList.clear();
+        historyManager.removeHistory();
         System.out.println("\nВсе задачи удалены");
     }
 
@@ -160,6 +174,7 @@ public class InMemoryTaskManager implements TaskManager {
             int epicId = subtasksList.get(taskId).getEpicId();
             subtask.setEpicId(epicId);
             subtask.setTaskStatus(status);
+            subtask.setId(taskId);
             subtasksList.put(taskId, subtask);
             System.out.println("\nПодадача #" + subtask.getId() + " обновлена");
             checkEpicStatus(epicId);
@@ -187,5 +202,13 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epicsList.get(epicId).setTaskStatus(TaskStatus.IN_PROGRESS);
         }
+    }
+
+    public List<Task> getSortedList() {
+        Map<Integer, Task> sortedMap = new TreeMap<>();
+        sortedMap.putAll(tasksList);
+        sortedMap.putAll(epicsList);
+        sortedMap.putAll(subtasksList);
+        return new ArrayList<>(sortedMap.values());
     }
 }
