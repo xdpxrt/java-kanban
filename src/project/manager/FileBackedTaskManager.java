@@ -8,6 +8,7 @@ import project.task.Task;
 import project.task.TaskStatus;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,8 +46,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         taskManager.getTask(5);
         taskManager.getTask(2);
 
-        //Считывание данных  из файла
-        //FileBackedTaskManager taskManager = Backup.loadFromFile(new File(BACKUP_PATH, FILE_NAME));
+
+//        Считывание данных  из файла
+//        FileBackedTaskManager taskManager = Backup.loadFromFile(new File(BACKUP_PATH, FILE_NAME));
 
     }
 

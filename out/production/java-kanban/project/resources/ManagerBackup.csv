@@ -6,4 +6,4 @@ id,type,name,status,description,epicId
 5,SUBTASK,Установить фундамент,NEW,Вызвать бригаду по заливке фундамента,2
 6,TASK,Отпуск,IN_PROGRESS,Купить билеты на море
 
-5,2,1
+1,5,2
