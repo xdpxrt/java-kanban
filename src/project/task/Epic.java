@@ -23,6 +23,7 @@ public class Epic extends Task {
         return TaskType.EPIC;
     }
 
+    @Override
     public String toStringForBack() {
         return String.join(",", String.valueOf(id), getTaskType().name(), name, taskStatus.name(), description);
     }
