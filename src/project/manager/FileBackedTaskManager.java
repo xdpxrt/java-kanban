@@ -37,7 +37,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int maxId = 0;
         List<Integer> historyIdList = new ArrayList<>();
         List<String> taskFieldsList = new ArrayList<>(taskFieldsFromFile(file));
-        if (taskFieldsList.size() < 1) {
+        if (taskFieldsList.isEmpty()) {
             System.out.println("Список задач пуст");
             return new FileBackedTaskManager();
         }

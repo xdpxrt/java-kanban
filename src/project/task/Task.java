@@ -1,14 +1,23 @@
 package project.task;
 
+import project.task.util.TaskTimeFormatter;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
     protected String name;
     protected String description;
     protected int id;
     protected TaskStatus taskStatus = TaskStatus.NEW;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
-    public Task(String name, String description) {
+    public Task(String name, String description, Integer duration, String startTime) {
         this.name = name;
         this.description = description;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = LocalDateTime.parse(startTime, TaskTimeFormatter.TIME_FORMATTER);
     }
 
     public void setId(int id) {
