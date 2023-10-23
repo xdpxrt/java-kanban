@@ -1,13 +1,15 @@
 package project.task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     private List<Integer> subtasksKeysList = new ArrayList<>();
+    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
-        super(name, description,0,"");
+        super(name, description, 0, "");
     }
 
     public List<Integer> getSubtasksKeysList() {

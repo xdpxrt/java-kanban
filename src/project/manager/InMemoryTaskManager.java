@@ -10,7 +10,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> tasksList = new HashMap<>();
     private Map<Integer, Epic> epicsList = new HashMap<>();
     private Map<Integer, Subtask> subtasksList = new HashMap<>();
-    private static int id = 1;
+    private int id = 1;
 
     public InMemoryTaskManager() {
     }
@@ -44,14 +44,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubtask(Subtask subtask) {
-        if (epicsList.containsKey(subtask.getEpicId())) {
-            if (epicsList.get(subtask.getEpicId()).getTaskStatus() != TaskStatus.DONE) {
-                subtask.setId(id);
-                subtask.setEpicId(subtask.getEpicId());
-                epicsList.get(subtask.getEpicId()).getSubtasksKeysList().add(id);
-                subtasksList.put(id++, subtask);
-                System.out.println("\nСоздана: " + subtask);
-            } else System.out.println("\nЗадача уже выполнена");
+        int epicId = subtask.getEpicId();
+        if (epicsList.containsKey(epicId)) {
+            Epic epic = epicsList.get(epicId);
+            subtask.setId(id);
+            epic.getSubtasksKeysList().add(id);
+            subtasksList.put(id++, subtask);
+            epic.setDuration(epic.getDuration() + subtask.getDuration());
+            if (epic.getStartTime() == null || epic.getStartTime().isAfter(subtask.getStartTime())) {
+                epic.setStartTime(subtask.getStartTime());
+            }
+            System.out.println("\nСоздана: " + subtask);
         } else {
             System.out.println("\nТакой задачи нет");
         }

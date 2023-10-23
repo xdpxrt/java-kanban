@@ -1,9 +1,11 @@
-package project.task;
+package test.task;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import project.manager.Managers;
 import project.manager.TaskManager;
+import project.task.Epic;
+import project.task.Subtask;
+import project.task.TaskStatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,9 +16,9 @@ class EpicTest {
 
     private void createSubtasks() {
         task1 = new Subtask("Выровнять участок", "Заказать трактор для выравнивания участка"
-                , 180, "10.06.2024", 1);
+                , 180, "10.06.2024 15:00", 1);
         task2 = new Subtask("Установить фундамент", "Вызвать бригаду по заливке фундамента"
-                , 250, "12.06.2024", 1);
+                , 250, "12.06.2024 12:00", 1);
         taskManager.addSubtask(task1);
         taskManager.addSubtask(task2);
     }
@@ -29,11 +31,15 @@ class EpicTest {
 
     @Test
     public void emptySubtasksListCheckStatusTest() {
-        assertEquals(TaskStatus.NEW, taskManager.getTask(1).getTaskStatus());
+        taskManager = Managers.getDefault();
+        taskManager.addEpic(new Epic("Построить дом", "План строительства дома"));
+        Assertions.assertEquals(TaskStatus.NEW, taskManager.getTask(1).getTaskStatus());
     }
 
     @Test
     public void allSubtasksAreNewCheckStatusTest() {
+        taskManager = Managers.getDefault();
+        taskManager.addEpic(new Epic("Построить дом", "План строительства дома"));
         createSubtasks();
         assertEquals(TaskStatus.NEW, taskManager.getTask(1).getTaskStatus());
     }

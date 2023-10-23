@@ -1,23 +1,30 @@
 package project.task;
 
-import project.task.util.TaskTimeFormatter;
+import project.util.TaskTimeFormatter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 public class Task {
     protected String name;
     protected String description;
     protected int id;
+
     protected TaskStatus taskStatus = TaskStatus.NEW;
-    protected Duration duration;
+    protected int duration;
+
     protected LocalDateTime startTime;
 
     public Task(String name, String description, Integer duration, String startTime) {
         this.name = name;
         this.description = description;
-        this.duration = Duration.ofMinutes(duration);
-        this.startTime = LocalDateTime.parse(startTime, TaskTimeFormatter.TIME_FORMATTER);
+        this.duration = duration;
+        try {
+            this.startTime = LocalDateTime.parse(startTime, TaskTimeFormatter.DATE_TIME_FORMATTER);
+        } catch (DateTimeParseException e) {
+            this.startTime = null;
+        }
     }
 
     public void setId(int id) {
@@ -36,8 +43,28 @@ public class Task {
         return taskStatus;
     }
 
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
     public TaskType getTaskType() {
         return TaskType.TASK;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(Duration.ofMinutes(duration));
     }
 
     public String toStringForBack() {
@@ -49,6 +76,9 @@ public class Task {
         return "\n" + getTaskType() + " #" + id +
                 "\nНазвание: " + '\'' + name + '\'' +
                 "\nОписание: " + '\'' + description + '\'' +
-                "\nСтатус: " + taskStatus;
+                "\nСтатус: " + taskStatus +
+                "\nДата начала: " + startTime.format(TaskTimeFormatter.DATE_TIME_FORMATTER) +
+                "\nПродолжительность: " + Duration.ofMinutes(duration).toHours()
+                + ':' + Duration.ofMinutes(duration).toMinutesPart();
     }
 }

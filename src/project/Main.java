@@ -1,6 +1,8 @@
 package project;
 
-import project.manager.FileBackedTaskManager;
+//import project.manager.FileBackedTaskManager;
+import project.manager.Managers;
+import project.manager.TaskManager;
 import project.manager.util.CSVTaskUtil;
 import project.task.Epic;
 import project.task.Subtask;
@@ -11,6 +13,9 @@ import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
+        TaskManager taskManager = Managers.getDefault();
+        taskManager.addTask(new Task("Бег", "Подготовиться к беговым тренировкам",30,"21.10.2023 10:40"));
+
 //        FileBackedTaskManager taskManager = new FileBackedTaskManager();
 //        taskManager.addTask(new Task("Бег", "Подготовиться к беговым тренировкам"));
 //        taskManager.addEpic(new Epic("Построить дом", "План строительства дома"));
