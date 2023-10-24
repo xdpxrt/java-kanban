@@ -26,7 +26,7 @@ public class Subtask extends Task {
     @Override
     public String toStringForBack() {
         return String.join(",", String.valueOf(id), getTaskType().name(), name, taskStatus.name(), description
-                , startTime.format(DATE_TIME_FORMATTER), String.valueOf(duration), String.valueOf(epicId));
+                , String.valueOf(duration), startTime.format(DATE_TIME_FORMATTER), String.valueOf(epicId));
     }
 
     @Override

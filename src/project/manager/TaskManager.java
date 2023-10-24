@@ -36,6 +36,7 @@ public interface TaskManager {
 
     List<Task> getPrioritizedTasks();
 
+    void updateEpicDateInfo(Epic epic, Subtask subtask);
 }
 
 

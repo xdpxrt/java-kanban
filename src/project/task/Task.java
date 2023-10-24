@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-import static project.util.TaskTimeFormatter.DATE_TIME_FORMATTER;
-import static project.util.TaskTimeFormatter.TIME_FORMATTER;
+import static project.util.TaskTimeFormatter.*;
 
 public class Task implements Comparable<Task> {
     protected String name;
@@ -64,16 +63,7 @@ public class Task implements Comparable<Task> {
     }
 
     public String getDurationToString() {
-        int hours;
-        int minutes;
-        if (duration < 60) {
-            hours = 0;
-            minutes = duration;
-        } else {
-            hours = duration / 60;
-            minutes = duration % 60;
-        }
-        return LocalTime.of(hours, minutes).format(TIME_FORMATTER);
+        return  String.valueOf(Duration.ofMinutes(duration).toHours()) + ':' + Duration.ofMinutes(duration).toMinutesPart();
     }
 
     public LocalDateTime getEndTime() {
@@ -82,7 +72,12 @@ public class Task implements Comparable<Task> {
 
     public String toStringForBack() {
         return String.join(",", String.valueOf(id), getTaskType().name(), name, taskStatus.name(), description
-                , startTime.format(DATE_TIME_FORMATTER), String.valueOf(duration));
+                , String.valueOf(duration), getStringDateTime(startTime));
+    }
+
+    public String getStringDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) return ZERO_DATE;
+        else return dateTime.format(DATE_TIME_FORMATTER);
     }
 
     @Override
@@ -91,12 +86,13 @@ public class Task implements Comparable<Task> {
                 "\nНазвание: " + '\'' + name + '\'' +
                 "\nОписание: " + '\'' + description + '\'' +
                 "\nСтатус: " + taskStatus +
-                "\nДата начала: " + startTime.format(DATE_TIME_FORMATTER) +
+                "\nДата начала: " + getStringDateTime(startTime) +
                 "\nПродолжительность: " + getDurationToString();
     }
 
     @Override
     public int compareTo(Task task) {
+        if (this.startTime == null) return 1;
         if (this.startTime.isAfter(task.startTime)) return 1;
         else if (this.startTime.isBefore(task.startTime)) return -1;
         else return 0;

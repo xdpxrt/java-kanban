@@ -5,6 +5,7 @@ import project.task.Subtask;
 import project.task.Task;
 import project.task.TaskStatus;
 
+import java.time.Duration;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -14,22 +15,29 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Epic> epicsList = new HashMap<>();
     private Map<Integer, Subtask> subtasksList = new HashMap<>();
     private int id = 1;
-    private final Set<Task> sortedTasks = new TreeSet<>();
+    private Set<Task> sortedTasks = new TreeSet<>();
 
     public InMemoryTaskManager() {
     }
 
     public InMemoryTaskManager(Map<Integer, Task> taskList, Map<Integer, Epic> epicList
-            , Map<Integer, Subtask> subtaskList, HistoryManager historyManager, int id) {
+            , Map<Integer, Subtask> subtaskList, HistoryManager historyManager, int id, Set<Task> sortedTasks) {
         this.tasksList = taskList;
         this.epicsList = epicList;
         this.subtasksList = subtaskList;
         this.historyManager = historyManager;
         this.id = id;
+        this.sortedTasks = sortedTasks;
     }
 
+    @Override
     public HistoryManager getHistoryManager() {
         return historyManager;
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(sortedTasks);
     }
 
     @Override
@@ -59,10 +67,9 @@ public class InMemoryTaskManager implements TaskManager {
                 epic.getSubtasksKeysList().add(id);
                 subtasksList.put(id++, subtask);
                 updateEpicDateInfo(epic, subtask);
-                checkTaskStartTime(subtask);
                 sortedTasks.add(subtask);
                 System.out.println("\nСоздана: " + subtask);
-            } else System.out.println("На это время уже стоит задача!");
+            } else System.out.println("\nНа это время уже стоит задача!");
         } else {
             System.out.println("\nТакого эпика нет");
         }
@@ -128,6 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasksList.clear();
         epicsList.clear();
         subtasksList.clear();
+        sortedTasks.clear();
         historyManager.removeHistory();
         System.out.println("\nВсе задачи удалены");
     }
@@ -135,10 +143,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeTask(Integer taskId) {
         if (tasksList.containsKey(taskId)) {
+            sortedTasks.remove(tasksList.get(taskId));
             tasksList.remove(taskId);
             historyManager.removeFromHistory(taskId);
             System.out.println("\nЗадача #" + taskId + " удалена");
         } else if (subtasksList.containsKey(taskId)) {
+            sortedTasks.remove(tasksList.get(taskId));
             subtasksList.remove(taskId);
             historyManager.removeFromHistory(taskId);
             System.out.println("\nЗадача #" + taskId + " удалена");
@@ -194,6 +204,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    @Override
     public List<Task> getSortedList() {
         Map<Integer, Task> sortedMap = new TreeMap<>();
         sortedMap.putAll(tasksList);
@@ -202,8 +213,17 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(sortedMap.values());
     }
 
-    public List<Task> getPrioritizedTasks() {
-        return new ArrayList<>(sortedTasks);
+    @Override
+    public void updateEpicDateInfo(Epic epic, Subtask subtask) {
+        if (subtask.getStartTime() == null) return;
+        if (epic.getStartTime() == null || epic.getStartTime().isAfter(subtask.getStartTime())) {
+            epic.setStartTime(subtask.getStartTime());
+        }
+        if (epic.getEndTime() == null || epic.getEndTime().isBefore(subtask.getEndTime())) {
+            epic.setEndTime(subtask.getEndTime());
+        }
+        epic.setDuration((int) Duration.between(epic.getStartTime(), epic.getEndTime()).toMinutes());
+
     }
 
     private void checkEpicStatus(int epicId) {
@@ -227,24 +247,16 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void updateEpicDateInfo(Epic epic, Subtask subtask) {
-        epic.setDuration(epic.getDuration() + subtask.getDuration());
-        if (epic.getStartTime() == null || epic.getStartTime().isAfter(subtask.getStartTime())) {
-            epic.setStartTime(subtask.getStartTime());
-        }
-        if (epic.getEndTime() == null || epic.getEndTime().isBefore(subtask.getEndTime())) {
-            epic.setEndTime(subtask.getEndTime());
-        }
-    }
-
     private boolean checkTaskStartTime(Task newTask) {
         boolean isFree = false;
-        if (sortedTasks.isEmpty()) {
+        if (sortedTasks.isEmpty() || newTask.getStartTime() == null) {
             return true;
         }
         for (Task task : sortedTasks) {
-            isFree = newTask.getStartTime().isBefore(task.getStartTime())
-                    || newTask.getStartTime().isAfter(task.getEndTime());
+            if (task.getStartTime() != null) {
+                isFree = newTask.getEndTime().isBefore(task.getStartTime())
+                        || newTask.getStartTime().isAfter(task.getEndTime());
+            }
         }
         return isFree;
     }

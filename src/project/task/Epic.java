@@ -22,11 +22,6 @@ public class Epic extends Task {
         this.subtasksKeysList = subtasksKeysList;
     }
 
-    public String getStringDateTime(LocalDateTime dateTime) {
-        if (dateTime == null) return ZERO_DATE;
-        else return dateTime.format(DATE_TIME_FORMATTER);
-    }
-
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
@@ -44,7 +39,7 @@ public class Epic extends Task {
     @Override
     public String toStringForBack() {
         return String.join(",", String.valueOf(id), getTaskType().name(), name, taskStatus.name(), description
-                , startTime.format(DATE_TIME_FORMATTER), String.valueOf(duration), endTime.format(DATE_TIME_FORMATTER));
+                , String.valueOf(duration), getStringDateTime(startTime));
     }
 
     @Override
