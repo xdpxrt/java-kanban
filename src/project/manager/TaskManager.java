@@ -1,6 +1,9 @@
 package project.manager;
 
-import project.task.*;
+import project.task.Epic;
+import project.task.Subtask;
+import project.task.Task;
+import project.task.TaskStatus;
 
 import java.util.List;
 
@@ -30,6 +33,9 @@ public interface TaskManager {
     HistoryManager getHistoryManager();
 
     List<Task> getSortedList();
+
+    List<Task> getPrioritizedTasks();
+
 }
 
 

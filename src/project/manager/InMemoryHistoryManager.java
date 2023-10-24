@@ -1,7 +1,7 @@
 package project.manager;
 
-import project.manager.util.CustomLinkedList;
-import project.manager.util.Node;
+import project.util.CustomLinkedList;
+import project.util.Node;
 import project.task.Task;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package project.manager;
 
-import project.manager.util.CustomLinkedList;
+import project.util.CustomLinkedList;
 import project.task.Task;
 
 import java.util.List;

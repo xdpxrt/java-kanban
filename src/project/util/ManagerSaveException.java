@@ -1,4 +1,4 @@
-package project.manager.util;
+package project.util;
 
 public class ManagerSaveException extends RuntimeException {
     public ManagerSaveException(String message) {

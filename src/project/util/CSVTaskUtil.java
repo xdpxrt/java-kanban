@@ -1,4 +1,4 @@
-package project.manager.util;
+package project.util;
 
 import project.manager.HistoryManager;
 import project.task.*;

@@ -1,4 +1,4 @@
-package project.manager.util;
+package project.util;
 
 public class Node<Task> {
     private final Task data;

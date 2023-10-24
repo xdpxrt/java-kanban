@@ -1,5 +1,7 @@
 package project.task;
 
+import static project.util.TaskTimeFormatter.DATE_TIME_FORMATTER;
+
 public class Subtask extends Task {
     private int epicId;
 
@@ -23,7 +25,8 @@ public class Subtask extends Task {
 
     @Override
     public String toStringForBack() {
-        return String.join(",", String.valueOf(id), getTaskType().name(), name, taskStatus.name(), description, String.valueOf(epicId));
+        return String.join(",", String.valueOf(id), getTaskType().name(), name, taskStatus.name(), description
+                , startTime.format(DATE_TIME_FORMATTER), String.valueOf(duration), String.valueOf(epicId));
     }
 
     @Override
@@ -31,6 +34,8 @@ public class Subtask extends Task {
         return "\n" + getTaskType() + " #" + id + " к эпику #" + epicId +
                 "\nНазвание задачи: " + '\'' + name + '\'' +
                 "\nОписание задачи: " + '\'' + description + '\'' +
-                "\nСтатус: " + taskStatus;
+                "\nСтатус: " + taskStatus +
+                "\nДата начала: " + startTime.format(DATE_TIME_FORMATTER) +
+                "\nПродолжительность: " + getDurationToString();
     }
 }

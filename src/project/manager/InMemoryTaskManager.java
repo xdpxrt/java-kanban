@@ -1,6 +1,9 @@
 package project.manager;
 
-import project.task.*;
+import project.task.Epic;
+import project.task.Subtask;
+import project.task.Task;
+import project.task.TaskStatus;
 
 import java.util.*;
 
@@ -11,6 +14,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Epic> epicsList = new HashMap<>();
     private Map<Integer, Subtask> subtasksList = new HashMap<>();
     private int id = 1;
+    private final Set<Task> sortedTasks = new TreeSet<>();
 
     public InMemoryTaskManager() {
     }
@@ -30,9 +34,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
-        task.setId(id);
-        tasksList.put(id++, task);
-        System.out.println("\nСоздана: " + task);
+        if (checkTaskStartTime(task)) {
+            task.setId(id);
+            tasksList.put(id++, task);
+            sortedTasks.add(task);
+            System.out.println("\nСоздана: " + task);
+        } else System.out.println("На это время уже стоит задача!");
     }
 
     @Override
@@ -46,17 +53,18 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubtask(Subtask subtask) {
         int epicId = subtask.getEpicId();
         if (epicsList.containsKey(epicId)) {
-            Epic epic = epicsList.get(epicId);
-            subtask.setId(id);
-            epic.getSubtasksKeysList().add(id);
-            subtasksList.put(id++, subtask);
-            epic.setDuration(epic.getDuration() + subtask.getDuration());
-            if (epic.getStartTime() == null || epic.getStartTime().isAfter(subtask.getStartTime())) {
-                epic.setStartTime(subtask.getStartTime());
-            }
-            System.out.println("\nСоздана: " + subtask);
+            if (checkTaskStartTime(subtask)) {
+                Epic epic = epicsList.get(epicId);
+                subtask.setId(id);
+                epic.getSubtasksKeysList().add(id);
+                subtasksList.put(id++, subtask);
+                updateEpicDateInfo(epic, subtask);
+                checkTaskStartTime(subtask);
+                sortedTasks.add(subtask);
+                System.out.println("\nСоздана: " + subtask);
+            } else System.out.println("На это время уже стоит задача!");
         } else {
-            System.out.println("\nТакой задачи нет");
+            System.out.println("\nТакого эпика нет");
         }
     }
 
@@ -186,6 +194,18 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    public List<Task> getSortedList() {
+        Map<Integer, Task> sortedMap = new TreeMap<>();
+        sortedMap.putAll(tasksList);
+        sortedMap.putAll(epicsList);
+        sortedMap.putAll(subtasksList);
+        return new ArrayList<>(sortedMap.values());
+    }
+
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(sortedTasks);
+    }
+
     private void checkEpicStatus(int epicId) {
         int countNewTasks = 0;
         int countDoneTasks = 0;
@@ -207,11 +227,25 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public List<Task> getSortedList() {
-        Map<Integer, Task> sortedMap = new TreeMap<>();
-        sortedMap.putAll(tasksList);
-        sortedMap.putAll(epicsList);
-        sortedMap.putAll(subtasksList);
-        return new ArrayList<>(sortedMap.values());
+    private void updateEpicDateInfo(Epic epic, Subtask subtask) {
+        epic.setDuration(epic.getDuration() + subtask.getDuration());
+        if (epic.getStartTime() == null || epic.getStartTime().isAfter(subtask.getStartTime())) {
+            epic.setStartTime(subtask.getStartTime());
+        }
+        if (epic.getEndTime() == null || epic.getEndTime().isBefore(subtask.getEndTime())) {
+            epic.setEndTime(subtask.getEndTime());
+        }
+    }
+
+    private boolean checkTaskStartTime(Task newTask) {
+        boolean isFree = false;
+        if (sortedTasks.isEmpty()) {
+            return true;
+        }
+        for (Task task : sortedTasks) {
+            isFree = newTask.getStartTime().isBefore(task.getStartTime())
+                    || newTask.getStartTime().isAfter(task.getEndTime());
+        }
+        return isFree;
     }
 }
