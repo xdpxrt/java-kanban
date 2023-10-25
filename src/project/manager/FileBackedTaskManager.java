@@ -35,7 +35,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         HistoryManager historyManager = Managers.getDefaultHistoryManager();
         List<Integer> historyIdList = new ArrayList<>();
         int maxId = 0;
-        Set<Task> sortedTasks = new TreeSet<>();
+        TreeSet<Task> sortedTasks = new TreeSet<>();
 
         List<String> taskFieldsList = new ArrayList<>(taskFieldsFromFile(file));
         if (taskFieldsList.size() == 1) {
@@ -73,8 +73,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     epic.setId(id);
                     epic.setTaskStatus(status);
                     epic.setSubtasksKeysList(new ArrayList<>());
-                    epic.setStartTime(LocalDateTime.parse(startTime,DATE_TIME_FORMATTER));
+                    epic.setStartTime(LocalDateTime.parse(startTime, DATE_TIME_FORMATTER));
                     epic.setDuration(duration);
+                    epic.setEndTime(epic.getStartTime().plusMinutes(duration));
                     epicsMap.put(id, epic);
                     break;
                 case SUBTASK:
@@ -82,9 +83,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     Subtask subtask = new Subtask(name, description, duration, startTime, epicId);
                     subtask.setId(id);
                     subtask.setTaskStatus(status);
-                    epicsMap.get(epicId).getSubtasksKeysList().add(id);
                     subtasksMap.put(id, subtask);
                     sortedTasks.add(subtask);
+                    if (sortedTasks.last().equals(subtask)) {
+                        epicsMap.get(epicId).setEndTime(subtask.getEndTime());
+                    }
+                    epicsMap.get(epicId).getSubtasksKeysList().add(id);
+
             }
         }
         if (!historyIdList.isEmpty()) {

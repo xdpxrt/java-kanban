@@ -213,8 +213,8 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(sortedMap.values());
     }
 
-    @Override
-    public void updateEpicDateInfo(Epic epic, Subtask subtask) {
+    private void updateEpicDateInfo(Epic epic, Subtask subtask) {
+        epic.setDuration(epic.getDuration() + subtask.getDuration());
         if (subtask.getStartTime() == null) return;
         if (epic.getStartTime() == null || epic.getStartTime().isAfter(subtask.getStartTime())) {
             epic.setStartTime(subtask.getStartTime());
@@ -222,8 +222,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic.getEndTime() == null || epic.getEndTime().isBefore(subtask.getEndTime())) {
             epic.setEndTime(subtask.getEndTime());
         }
-        epic.setDuration((int) Duration.between(epic.getStartTime(), epic.getEndTime()).toMinutes());
-
     }
 
     private void checkEpicStatus(int epicId) {

@@ -22,18 +22,19 @@ public class Main {
         taskManager.addTask(new Task("Отпуск", "Купить билеты", 0, "00.00.00 00:00"));
         taskManager.addTask(new Task("Бег", "Подготовиться к беговым тренировкам", 30, "21.06.2023 10:40"));
 
-        System.out.println(taskManager.getTask(1));
+//        System.out.println(taskManager.getTask(1));
 
         taskManager.getTask(1);
         taskManager.getTask(5);
         taskManager.getTask(4);
+        taskManager.getTask(5);
+
+        System.out.println(taskManager.getHistoryManager().getHistory());
 
 
-//        Считывание и формирование менеджера из файла
-       FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(new File(CSVTaskUtil.getBackupPath()
-                , CSVTaskUtil.getFileName()));
-      //  System.out.println(taskManagerFromFile.getPrioritizedTasks());
-        System.out.println(taskManagerFromFile.getTask(1));
-
+////        Считывание и формирование менеджера из файла
+//       FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(new File(CSVTaskUtil.getBackupPath()
+//                , CSVTaskUtil.getFileName()));
+//        System.out.println(taskManagerFromFile.getTask(1));
     }
 }
