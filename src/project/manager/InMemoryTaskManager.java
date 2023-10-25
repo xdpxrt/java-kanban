@@ -5,7 +5,6 @@ import project.task.Subtask;
 import project.task.Task;
 import project.task.TaskStatus;
 
-import java.time.Duration;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -254,7 +253,7 @@ public class InMemoryTaskManager implements TaskManager {
             if (task.getStartTime() != null) {
                 isFree = newTask.getEndTime().isBefore(task.getStartTime())
                         || newTask.getStartTime().isAfter(task.getEndTime());
-            }
+            } else isFree = true;
         }
         return isFree;
     }

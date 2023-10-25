@@ -1,18 +1,16 @@
-package test.manager;
+package project.manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import project.manager.HistoryManager;
-import project.manager.Managers;
 import project.task.Task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HistoryManagerTest {
     private HistoryManager historyManager;
-    Task task1;
-    Task task2;
-    Task task3;
+    private Task task1;
+    private Task task2;
+    private Task task3;
 
     private void fillHistory() {
         task1 = new Task("Отпуск", "Купить билеты", 30, "21.10.23 15:30");
@@ -40,7 +38,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    public void addToHistoryDublicateTest() {
+    public void addToHistoryDuplicateTest() {
         fillHistory();
         historyManager.addToHistory(task1);
         assertEquals(3, historyManager.getHistory().size());

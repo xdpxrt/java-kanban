@@ -2,10 +2,11 @@ package project.task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 
-import static project.util.TaskTimeFormatter.DATE_TIME_FORMATTER;
-import static project.util.TaskTimeFormatter.ZERO_DATE;
+import static project.util.TaskTimeFormatter.*;
 
 public class Task implements Comparable<Task> {
     protected String name;
@@ -63,11 +64,13 @@ public class Task implements Comparable<Task> {
     }
 
     public String getDurationToString() {
-        return  String.valueOf(Duration.ofMinutes(duration).toHours()) + ':' + Duration.ofMinutes(duration).toMinutesPart();
+        return LocalTime.of((int) Duration.ofMinutes(duration).toHours(), Duration.ofMinutes(duration).toMinutesPart())
+                .format(TIME_FORMATTER);
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plus(Duration.ofMinutes(duration));
+        if (startTime == null) return null;
+        else return startTime.plus(Duration.ofMinutes(duration));
     }
 
     public String toStringForBack() {
@@ -92,9 +95,24 @@ public class Task implements Comparable<Task> {
 
     @Override
     public int compareTo(Task task) {
-        if (this.startTime == null) return 1;
+        if (this.startTime == null || task.getStartTime() == null) return 1;
         if (this.startTime.isAfter(task.startTime)) return 1;
         else if (this.startTime.isBefore(task.startTime)) return -1;
         else return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && duration == task.duration && Objects.equals(name, task.name)
+                && Objects.equals(description, task.description) && taskStatus == task.taskStatus
+                && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, id, taskStatus, duration, startTime);
     }
 }

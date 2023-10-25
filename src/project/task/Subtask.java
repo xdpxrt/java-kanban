@@ -26,7 +26,7 @@ public class Subtask extends Task {
     @Override
     public String toStringForBack() {
         return String.join(",", String.valueOf(id), getTaskType().name(), name, taskStatus.name(), description
-                , String.valueOf(duration), startTime.format(DATE_TIME_FORMATTER), String.valueOf(epicId));
+                , String.valueOf(duration), getStringDateTime(startTime), String.valueOf(epicId));
     }
 
     @Override
@@ -35,7 +35,7 @@ public class Subtask extends Task {
                 "\nНазвание задачи: " + '\'' + name + '\'' +
                 "\nОписание задачи: " + '\'' + description + '\'' +
                 "\nСтатус: " + taskStatus +
-                "\nДата начала: " + startTime.format(DATE_TIME_FORMATTER) +
+                "\nДата начала: " + getStringDateTime(startTime) +
                 "\nПродолжительность: " + getDurationToString();
     }
 }

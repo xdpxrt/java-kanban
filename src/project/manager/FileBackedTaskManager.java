@@ -16,6 +16,7 @@ import static java.lang.Integer.parseInt;
 import static project.util.CSVTaskUtil.historyFromString;
 import static project.util.CSVTaskUtil.taskFieldsFromFile;
 import static project.util.TaskTimeFormatter.DATE_TIME_FORMATTER;
+import static project.util.TaskTimeFormatter.ZERO_DATE;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final static String HEADER = "id,type,name,status,description,duration,startTime,epicId\n";
@@ -35,7 +36,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         HistoryManager historyManager = Managers.getDefaultHistoryManager();
         List<Integer> historyIdList = new ArrayList<>();
         int maxId = 0;
-        TreeSet<Task> sortedTasks = new TreeSet<>();
+        Set<Task> sortedTasks = new TreeSet<>();
 
         List<String> taskFieldsList = new ArrayList<>(taskFieldsFromFile(file));
         if (taskFieldsList.size() == 1) {
@@ -45,9 +46,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         if (taskFieldsList.get(taskFieldsList.size() - 2).isEmpty()) {
             historyIdList = historyFromString(taskFieldsList.get(taskFieldsList.size() - 1));
             taskFieldsList.remove(taskFieldsList.size() - 1);
-            taskFieldsList.remove(taskFieldsList.size() - 1);
         }
         taskFieldsList.remove(0);
+        taskFieldsList.remove(taskFieldsList.size() - 1);
         for (String taskFields : taskFieldsList) {
             String[] field = taskFields.split(",");
             int id = parseInt(field[0]);
@@ -73,23 +74,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     epic.setId(id);
                     epic.setTaskStatus(status);
                     epic.setSubtasksKeysList(new ArrayList<>());
-                    epic.setStartTime(LocalDateTime.parse(startTime, DATE_TIME_FORMATTER));
+                    if (!startTime.equals(ZERO_DATE)) {
+                        epic.setStartTime(LocalDateTime.parse(startTime, DATE_TIME_FORMATTER));
+                        epic.setEndTime(epic.getStartTime().plusMinutes(duration));
+                    }
                     epic.setDuration(duration);
-                    epic.setEndTime(epic.getStartTime().plusMinutes(duration));
                     epicsMap.put(id, epic);
                     break;
                 case SUBTASK:
                     int epicId = parseInt(field[7]);
+                    Epic ownedEpic = epicsMap.get(epicId);
                     Subtask subtask = new Subtask(name, description, duration, startTime, epicId);
                     subtask.setId(id);
                     subtask.setTaskStatus(status);
                     subtasksMap.put(id, subtask);
                     sortedTasks.add(subtask);
-                    if (sortedTasks.last().equals(subtask)) {
-                        epicsMap.get(epicId).setEndTime(subtask.getEndTime());
-                    }
-                    epicsMap.get(epicId).getSubtasksKeysList().add(id);
+                    ownedEpic.getSubtasksKeysList().add(id);
+                    if (subtask.getEndTime() != null) {
+                        if (ownedEpic.getEndTime() == null || subtask.getEndTime().isAfter(ownedEpic.getEndTime())) {
+                            ownedEpic.setEndTime(subtask.getEndTime());
+                        }
 
+                    }
             }
         }
         if (!historyIdList.isEmpty()) {

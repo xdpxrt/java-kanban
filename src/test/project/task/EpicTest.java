@@ -1,4 +1,4 @@
-package test.task;
+package project.task;
 
 import org.junit.jupiter.api.*;
 import project.manager.Managers;
@@ -33,7 +33,7 @@ class EpicTest {
     public void emptySubtasksListCheckStatusTest() {
         taskManager = Managers.getDefault();
         taskManager.addEpic(new Epic("Построить дом", "План строительства дома"));
-        Assertions.assertEquals(TaskStatus.NEW, taskManager.getTask(1).getTaskStatus());
+        assertEquals(TaskStatus.NEW, taskManager.getTask(1).getTaskStatus());
     }
 
     @Test
