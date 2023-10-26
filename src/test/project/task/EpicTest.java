@@ -1,11 +1,9 @@
 package project.task;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import project.manager.Managers;
 import project.manager.TaskManager;
-import project.task.Epic;
-import project.task.Subtask;
-import project.task.TaskStatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

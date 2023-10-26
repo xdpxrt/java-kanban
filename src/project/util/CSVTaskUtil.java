@@ -28,7 +28,7 @@ public class CSVTaskUtil {
         StringBuilder history = new StringBuilder();
         if (!manager.getHistory().isEmpty()) {
             for (Task task : manager.getHistory()) {
-                history.append(task.getId() + ",");
+                history.append(task.getId()).append(",");
             }
             return history.delete(history.length() - 1, history.length()).toString();
         }

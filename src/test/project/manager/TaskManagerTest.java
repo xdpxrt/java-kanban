@@ -185,5 +185,4 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.updateSubtask(2, IN_PROGRESS, newSubtask);
         assertEquals(newSubtask, taskManager.getTask(2));
     }
-
 }
