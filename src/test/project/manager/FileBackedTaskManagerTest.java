@@ -1,5 +1,11 @@
 package project.manager;
 
-public class FileBackedTaskManagerTest extends TaskManagerTest{
+import org.junit.jupiter.api.BeforeEach;
 
+public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
+    @BeforeEach
+    public void beforeEachFileBacked() {
+        taskManager = Managers.getDefaultFileBackedTaskManager();
+        init();
+    }
 }

@@ -32,8 +32,6 @@ public interface TaskManager {
 
     HistoryManager getHistoryManager();
 
-    List<Task> getSortedList();
-
     List<Task> getPrioritizedTasks();
 }
 

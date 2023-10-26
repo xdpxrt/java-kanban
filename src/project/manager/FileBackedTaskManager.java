@@ -117,7 +117,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void save() {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(CSVTaskUtil.getBackupPath()
                 + CSVTaskUtil.getFileName()))) {
-            List<Task> list = new ArrayList<>(getSortedList());
+            List<Task> list = new ArrayList<>(getAllTasks());
             fileWriter.write(HEADER);
             if (!list.isEmpty()) {
                 for (Task task : list) {

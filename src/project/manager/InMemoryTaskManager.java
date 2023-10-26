@@ -76,22 +76,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getAllTasks() {
-        List<Task> allTasks = new ArrayList<>();
-        for (int taskId : tasksList.keySet()) {
-            allTasks.add(tasksList.get(taskId));
-        }
-        for (int taskId : epicsList.keySet()) {
-            allTasks.add(epicsList.get(taskId));
-        }
-        for (int taskId : subtasksList.keySet()) {
-            allTasks.add(subtasksList.get(taskId));
-        }
-        if (allTasks.isEmpty()) {
-            System.out.println("\nЗадач нет");
-            return null;
-        } else {
-            return allTasks;
-        }
+        Map<Integer, Task> sortedMap = new TreeMap<>();
+        sortedMap.putAll(tasksList);
+        sortedMap.putAll(epicsList);
+        sortedMap.putAll(subtasksList);
+        return new ArrayList<>(sortedMap.values());
     }
 
     @Override
@@ -147,7 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.removeFromHistory(taskId);
             System.out.println("\nЗадача #" + taskId + " удалена");
         } else if (subtasksList.containsKey(taskId)) {
-            sortedTasks.remove(tasksList.get(taskId));
+            sortedTasks.remove(subtasksList.get(taskId));
             subtasksList.remove(taskId);
             historyManager.removeFromHistory(taskId);
             System.out.println("\nЗадача #" + taskId + " удалена");
@@ -201,15 +190,6 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             System.out.println("\nТакой подзадачи нет");
         }
-    }
-
-    @Override
-    public List<Task> getSortedList() {
-        Map<Integer, Task> sortedMap = new TreeMap<>();
-        sortedMap.putAll(tasksList);
-        sortedMap.putAll(epicsList);
-        sortedMap.putAll(subtasksList);
-        return new ArrayList<>(sortedMap.values());
     }
 
     private void updateEpicDateInfo(Epic epic, Subtask subtask) {
