@@ -14,13 +14,13 @@ public interface TaskManager {
 
     void addSubtask(Subtask subtask); //POST /tasks/subtask/?id=
 
-    List<Task> getAllTasks(); //GET /tasks/task
+    List<Task> getAllTasks(); //GET /tasks
 
     Task getTask(Integer taskId); // GET /tasks/?id=
 
     List<Task> getSubtasksByEpic(Integer epicId); //GET /tasks/epic/subtasks
 
-    void removeAllTasks(); // DELETE /tasks/task
+    void removeAllTasks(); // DELETE /tasks
 
     void removeTask(Integer taskId); //DELETE /tasks/?id=
 
@@ -32,7 +32,7 @@ public interface TaskManager {
 
     HistoryManager getHistoryManager(); //GET /tasks/history
 
-    List<Task> getPrioritizedTasks(); //GET /tasks
+    List<Task> getPrioritizedTasks(); //GET /tasks/priority
 }
 
 
