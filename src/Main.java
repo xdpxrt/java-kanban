@@ -1,26 +1,24 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import project.manager.Managers;
-import project.manager.TaskManager;
-import project.task.Task;
-import project.util.LocalDateAdapter;
+import project.server.KVServer;
+import project.server.KVTaskClient;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.net.URI;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-//        HttpTaskServer server = new HttpTaskServer();
-//        server.start();
-        TaskManager manager = Managers.getDefaultFileBackedTaskManager();
-        manager.addTask(new Task("testName", "testDescription", 30, "21.10.2023 15:30"));
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter()).create();
-        String task = gson.toJson(manager.getTask(1));
-        System.out.println(task);
+    public static void main(String[] args) throws IOException, InterruptedException {
 
+        KVServer kvServer = new KVServer();
+        kvServer.start();
+        KVTaskClient client = new KVTaskClient(URI.create("http://localhost:8078"));
+        String json = "{\n" +
+                "\t\"name\": \"testName\",\n" +
+                "\t\"description\": \"testDescription\",\n" +
+                "\t\"id\": 1,\n" +
+                "\t\"taskStatus\": \"NEW\",\n" +
+                "\t\"duration\": 30,\n" +
+                "\t\"startTime\": \"21.10.2023 15:30\"\n" +
+                "}";
+        client.put("1",json);
+        System.out.println(client.load("1"));
     }
-
 }
-

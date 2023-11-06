@@ -12,7 +12,7 @@ public class Task implements Comparable<Task> {
     protected String name;
     protected String description;
     protected int id;
-    protected TaskStatus taskStatus = TaskStatus.NEW;
+    protected TaskStatus taskStatus;
     protected int duration;
     protected LocalDateTime startTime;
 
@@ -20,6 +20,7 @@ public class Task implements Comparable<Task> {
         this.name = name;
         this.description = description;
         this.duration = duration;
+        this.taskStatus = TaskStatus.NEW;
         try {
             this.startTime = LocalDateTime.parse(startTime, DATE_TIME_FORMATTER);
         } catch (DateTimeParseException e) {
