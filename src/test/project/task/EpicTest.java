@@ -23,7 +23,7 @@ class EpicTest {
 
     @BeforeEach
     public void beforeEach() {
-        taskManager = Managers.getDefault();
+        taskManager = Managers.getDefaultInMemoryTaskManager();
         taskManager.addEpic(new Epic("testName1", "testDescription1"));
     }
 

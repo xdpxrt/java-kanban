@@ -9,14 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class HistoryManagerTest {
     private HistoryManager historyManager;
     private Task task1;
-    private Task task2;
-    private Task task3;
 
     private void fillHistory() {
         task1 = new Task("Отпуск", "Купить билеты", 30, "21.10.23 15:30");
-        task2 = new Task("Бег", "Подготовиться к беговым тренировкам", 30
+        Task task2 = new Task("Бег", "Подготовиться к беговым тренировкам", 30
                 , "21.06.2023 10:40");
-        task3 = new Task("Стоматолог", "Сходить на чистку зубов", 120
+        Task task3 = new Task("Стоматолог", "Сходить на чистку зубов", 120
                 , "04.07.2023 08:00");
         task1.setId(1);
         task2.setId(2);

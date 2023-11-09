@@ -8,16 +8,22 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static project.util.TaskTimeFormatter.DATE_TIME_FORMATTER;
+import static project.util.TaskTimeFormatter.ZERO_DATE;
 
 public class LocalDateAdapter extends TypeAdapter<LocalDateTime> {
 
     @Override
     public void write(final JsonWriter jsonWriter, final LocalDateTime localDateTime) throws IOException {
-        jsonWriter.value(localDateTime.format(DATE_TIME_FORMATTER));
+        if (localDateTime == null) {
+            jsonWriter.value(ZERO_DATE);
+        } else jsonWriter.value(localDateTime.format(DATE_TIME_FORMATTER));
     }
 
     @Override
     public LocalDateTime read(final JsonReader jsonReader) throws IOException {
-        return LocalDateTime.parse(jsonReader.nextString(), DATE_TIME_FORMATTER);
-    }
+        String in = jsonReader.nextString();
+        if (!ZERO_DATE.equals(in)) {
+           return LocalDateTime.parse(in, DATE_TIME_FORMATTER);
+       } else return null;
+   }
 }

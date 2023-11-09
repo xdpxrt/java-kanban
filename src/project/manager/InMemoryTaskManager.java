@@ -38,6 +38,18 @@ public class InMemoryTaskManager implements TaskManager {
         return id;
     }
 
+    public Map<Integer, Task> getTasksMap() {
+        return tasksMap;
+    }
+
+    public Map<Integer, Epic> getEpicsMap() {
+        return epicsMap;
+    }
+
+    public Map<Integer, Subtask> getSubtasksMap() {
+        return subtasksMap;
+    }
+
     @Override
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(sortedTasks);

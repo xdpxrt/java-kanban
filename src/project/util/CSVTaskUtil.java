@@ -16,6 +16,8 @@ public class CSVTaskUtil {
     private final static String BACKUP_PATH = "src\\project\\resources\\";
     private final static String FILE_NAME = "ManagerBackup.csv";
 
+    public final static String EMPTY_HISTORY = "EMPTY_HISTORY";
+
     public static String getBackupPath() {
         return BACKUP_PATH;
     }
@@ -31,12 +33,15 @@ public class CSVTaskUtil {
                 history.append(task.getId()).append(",");
             }
             return history.delete(history.length() - 1, history.length()).toString();
-        }
-        return history.toString();
+        } else return EMPTY_HISTORY;
+//        return history.toString();
     }
 
     public static List<Integer> historyFromString(String value) {
         List<Integer> historyAsArray = new ArrayList<>();
+        if (EMPTY_HISTORY.equals(value)){
+            return historyAsArray;
+        }
         try {
             for (String field : value.split(",")) {
                 historyAsArray.add((parseInt(field)));

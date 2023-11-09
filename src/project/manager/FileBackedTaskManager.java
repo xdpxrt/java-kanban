@@ -24,7 +24,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public FileBackedTaskManager() {
     }
 
-    private FileBackedTaskManager(Map<Integer, Task> taskMap, Map<Integer, Epic> epicMap, Map<Integer
+    protected FileBackedTaskManager(Map<Integer, Task> taskMap, Map<Integer, Epic> epicMap, Map<Integer
             , Subtask> subtaskMap, HistoryManager historyManager, int id, Set<Task> sortedTasks) {
         super(taskMap, epicMap, subtaskMap, historyManager, id, sortedTasks);
     }

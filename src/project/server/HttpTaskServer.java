@@ -1,11 +1,17 @@
 package project.server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import project.manager.*;
+import project.manager.Managers;
+import project.manager.TaskManager;
 import project.task.Epic;
 import project.task.Subtask;
 import project.task.Task;
+import project.task.TaskStatus;
+import project.util.LocalDateAdapter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,33 +20,31 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import com.google.gson.*;
-import project.task.TaskStatus;
-import project.util.LocalDateAdapter;
-
 
 public class HttpTaskServer {
-    private static final int PORT = 8080;
+    public static final int HTTP_PORT = 8080;
     private final HttpServer httpServer;
     private final TaskManager taskManager;
     private String query;
-    String[] path;
+    private String[] path;
     Gson gson = new GsonBuilder()
             .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter()).create();
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+            .create();
 
-    public HttpTaskServer() throws IOException {
-        this.httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
-        this.taskManager = Managers.getDefaultFileBackedTaskManager();
-
-        taskManager.addTask(new Task("testName", "testDescription", 30, "21.10.2023 15:30"));
-
+    public HttpTaskServer() throws IOException, InterruptedException {
+        this.httpServer = HttpServer.create(new InetSocketAddress("localhost", HTTP_PORT), 0);
+        this.taskManager = Managers.getDefault();
         httpServer.createContext("/tasks", this::tasksHandle);
         httpServer.createContext("/tasks/task", this::taskHandle);
         httpServer.createContext("/tasks/epic", this::epicHandle);
         httpServer.createContext("/tasks/subtask", this::subtaskHandle);
         httpServer.createContext("/tasks/history", this::historyHandle);
         httpServer.createContext("/tasks/priority", this::priorityHandle);
+    }
+
+    public TaskManager getTaskManager() {
+        return taskManager;
     }
 
     public void tasksHandle(HttpExchange exchange) {
@@ -59,10 +63,7 @@ public class HttpTaskServer {
                     writeResponse(exchange, "Метод не поддерживается", 405);
             }
         } else if (path.length == 2 && Pattern.matches("^id=\\d+$", query)) {
-            int id;
-            if (parseId(exchange, query).isPresent()) {
-                id = parseId(exchange, query).get();
-            } else return;
+            int id = parseId(query);
             if (taskManager.getTask(id) == null) {
                 writeResponse(exchange, "Задача с id:" + id + " не найдена", 404);
                 return;
@@ -106,39 +107,36 @@ public class HttpTaskServer {
                         , 200);
             }
         } else if (path.length == 3 && Pattern.matches("^id=\\d+&status=\\D+$", query)) {
-            int id;
-            TaskStatus status;
             String[] queryToArray = query.split("&");
-            Optional<Integer> optId = parseId(exchange, queryToArray[0]);
-            Optional<TaskStatus> optStatus = parseStatus(exchange, queryToArray[1]);
-            if (optId.isPresent() && optStatus.isPresent()) {
-                id = optId.get();
+            int id = parseId(queryToArray[0]);
+            TaskStatus status;
+            Optional<TaskStatus> optStatus = parseStatus(queryToArray[1]);
+            if (optStatus.isPresent()) {
                 status = optStatus.get();
-            } else return;
-            if (taskManager.getTask(optId.get()) == null) {
+            } else {
+                writeResponse(exchange, "Некорректный статус", 400);
+                return;
+            }
+            if (taskManager.getTask(id) == null) {
                 writeResponse(exchange, "Задача с id:" + id + " не найдена", 404);
                 return;
             }
             newTask.setId(id);
-            boolean isAdded = taskManager.updateTask(optId.get(), status, newTask);
+            boolean isAdded = taskManager.updateTask(id, status, newTask);
             if (isAdded) {
                 writeResponse(exchange, "Задача #" + id + " обновлена", 201);
             } else writeResponse(exchange
-                    , "Задача не обновлена! На это время уже стоит другая задача"
-                    , 200);
+                    , "Задача не обновлена! На это время уже стоит другая задача", 200);
         } else writeResponse(exchange, "Некорректный запрос", 400);
     }
 
     public void epicHandle(HttpExchange exchange) {
         Epic newEpic;
         setPathAndQuery(exchange);
-        int id;
         switch (exchange.getRequestMethod()) {
             case "GET":
                 if (path.length == 4 && path[3].equals("getSubtasks") && Pattern.matches("^id=\\d+$", query)) {
-                    if (parseId(exchange, query).isPresent()) {
-                        id = parseId(exchange, query).get();
-                    } else return;
+                    int id = parseId(query);
                     if (taskManager.getTask(id) == null) {
                         writeResponse(exchange, "Задача с id:" + id + " не найдена", 404);
                         return;
@@ -159,18 +157,15 @@ public class HttpTaskServer {
                     taskManager.addEpic(newEpic);
                     writeResponse(exchange, "Задача добавлена", 201);
                 } else if (path.length == 3 && Pattern.matches("^id=\\d+$", query)) {
-                    Optional<Integer> optId = parseId(exchange, query);
-                    if (optId.isPresent()) {
-                        id = parseId(exchange, query).get();
-                    } else return;
+                    int id = parseId(query);
                     if (taskManager.getTask(id) == null) {
                         writeResponse(exchange, "Задача с id:" + id + " не найдена", 404);
                         return;
                     }
                     taskManager.updateEpic(id, newEpic);
                     writeResponse(exchange, "Задача #" + id + " обновлена", 201);
-                } else
-                    break;
+                }
+                break;
             default:
                 writeResponse(exchange, "Метод не поддерживается", 405);
         }
@@ -199,15 +194,17 @@ public class HttpTaskServer {
                         , 200);
             }
         } else if (path.length == 3 && Pattern.matches("^id=\\d+&\\D+$", query)) {
-            int id;
+
             TaskStatus status;
             String[] queryToArray = query.split("&");
-            Optional<Integer> optId = parseId(exchange, queryToArray[0]);
-            Optional<TaskStatus> optStatus = parseStatus(exchange, queryToArray[1]);
-            if (optId.isPresent() && optStatus.isPresent()) {
-                id = optId.get();
+            int id = parseId(queryToArray[0]);
+            Optional<TaskStatus> optStatus = parseStatus(queryToArray[1]);
+            if (optStatus.isPresent()) {
                 status = optStatus.get();
-            } else return;
+            } else {
+                writeResponse(exchange, "Некорректный статус", 400);
+                return;
+            }
             if (taskManager.getTask(id) == null) {
                 writeResponse(exchange, "Задача с id:" + id + " не найдена", 404);
                 return;
@@ -228,7 +225,7 @@ public class HttpTaskServer {
             writeResponse(exchange, "Метод не поддерживается", 405);
             return;
         }
-        if (path.length != 3 && query != null) {
+        if (path.length != 3 || query != null) {
             writeResponse(exchange, "Некорректный запрос", 400);
             return;
         }
@@ -252,7 +249,7 @@ public class HttpTaskServer {
 
     public void start() {
         httpServer.start();
-        System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
+        System.out.println("\nЗапускаем сервер на порту " + HTTP_PORT);
     }
 
     public void stop() {
@@ -278,32 +275,18 @@ public class HttpTaskServer {
         }
     }
 
-    private Optional<Integer> parseId(HttpExchange exchange, String query) {
-        try {
-            int id = Integer.parseInt(query.replaceFirst("id=", ""));
-            return Optional.of(id);
-        } catch (NumberFormatException e) {
-            writeResponse(exchange, "Некорректный id", 400);
-            return Optional.empty();
-        }
+    private Integer parseId(String query) {
+        return Integer.parseInt(query.replaceFirst("id=", ""));
+
     }
 
-    private Optional<TaskStatus> parseStatus(HttpExchange exchange, String query) {
+    private Optional<TaskStatus> parseStatus(String query) {
         String statusType = query.split("=")[1];
-        switch (statusType) {
-            case "NEW":
-                return Optional.of(TaskStatus.NEW);
-            case "IN_PROGRESS":
-                return Optional.of(TaskStatus.IN_PROGRESS);
-            case "DONE":
-                return Optional.of(TaskStatus.DONE);
-            default:
-                writeResponse(exchange, "Некорректный статус", 400);
-                return Optional.empty();
-        }
+        return switch (statusType) {
+            case "NEW" -> Optional.of(TaskStatus.NEW);
+            case "IN_PROGRESS" -> Optional.of(TaskStatus.IN_PROGRESS);
+            case "DONE" -> Optional.of(TaskStatus.DONE);
+            default -> Optional.empty();
+        };
     }
 }
-
-
-
-

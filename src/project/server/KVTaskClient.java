@@ -9,8 +9,8 @@ import java.net.http.HttpResponse;
 public class KVTaskClient {
     private final URI uri;
     private final String apiToken;
-    HttpClient client = HttpClient.newHttpClient();
-    HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+    private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
 
 
     public KVTaskClient(URI uri) throws IOException, InterruptedException {
@@ -30,8 +30,20 @@ public class KVTaskClient {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .uri(URI.create(saveURI))
                 .build();
-        client.send(save, handler);
-        System.out.println("Сохранено на сервер");
+        try {
+            HttpResponse<String> response = client.send(save, handler);
+            int status = response.statusCode();
+            if (status >= 200 && status <= 299) {
+                System.out.println("Сохранено на сервер");
+            } else if (status >= 400 && status <= 499) {
+                System.out.println("Сервер сообщил о проблеме с запросом. Код состояния: " + status);
+            } else {
+                System.out.println("Что-то пошло не так. Сервер вернул код состояния: " + status);
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Во время выполнения запроса ресурса по url-адресу: '" + saveURI + "' возникла ошибка.\n"
+                    + "Проверьте, пожалуйста, адрес и повторите попытку.");
+        }
     }
 
     public String load(String key) throws IOException, InterruptedException {
@@ -40,8 +52,25 @@ public class KVTaskClient {
                 .GET()
                 .uri(URI.create(loadURI))
                 .build();
-        HttpResponse<String> response = client.send(load, handler);
-        return response.body();
+        String value = null;
+        try {
+            HttpResponse<String> response = client.send(load, handler);
+            int status = response.statusCode();
+            if (status >= 200 && status <= 299) {
+                value = response.body();
+                System.out.println("Выгружено с сервера");
+            } else if (status >= 400 && status <= 499) {
+                System.out.println("Сервер сообщил о проблеме с запросом. Код состояния: " + status);
+                return null;
+            } else {
+                System.out.println("Что-то пошло не так. Сервер вернул код состояния: " + status);
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Во время выполнения запроса ресурса по url-адресу: '" + loadURI + "' возникла ошибка.\n"
+                    + "Проверьте, пожалуйста, адрес и повторите попытку.");
+        }
+        return value;
     }
 
 
