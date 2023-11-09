@@ -21,7 +21,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected void init() {
         epic = new Epic("testName", "testDescription");
         subtask = new Subtask("testName", "testDescription"
-                , 30, "30.06.2023 15:30", 1);
+                , 30, "30.06.2023 10:30", 1);
         task = new Task("testName", "testDescription", 30, "21.10.2023 15:30");
     }
 

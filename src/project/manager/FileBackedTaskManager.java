@@ -24,12 +24,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public FileBackedTaskManager() {
     }
 
-    public FileBackedTaskManager(Map<Integer, Task> taskMap, Map<Integer, Epic> epicMap, Map<Integer
+    protected FileBackedTaskManager(Map<Integer, Task> taskMap, Map<Integer, Epic> epicMap, Map<Integer
             , Subtask> subtaskMap, HistoryManager historyManager, int id, Set<Task> sortedTasks) {
         super(taskMap, epicMap, subtaskMap, historyManager, id, sortedTasks);
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public static TaskManager loadFromFile(File file) {
         Map<Integer, Task> tasksMap = new HashMap<>();
         Map<Integer, Epic> epicsMap = new HashMap<>();
         Map<Integer, Subtask> subtasksMap = new HashMap<>();
@@ -134,9 +134,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addTask(Task task) {
-        super.addTask(task);
+    public boolean addTask(Task task) {
+        boolean isAdded = super.addTask(task);
         save();
+        return isAdded;
     }
 
     @Override
@@ -146,9 +147,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addSubtask(Subtask subtask) {
-        super.addSubtask(subtask);
+    public boolean addSubtask(Subtask subtask) {
+        boolean isAdded = super.addSubtask(subtask);
         save();
+        return isAdded;
     }
 
     @Override
@@ -164,9 +166,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateTask(int taskId, TaskStatus status, Task task) {
-        super.updateTask(taskId, status, task);
+    public boolean updateTask(int taskId, TaskStatus status, Task task) {
+        boolean isAdded = super.updateTask(taskId, status, task);
         save();
+        return isAdded;
     }
 
     @Override
@@ -176,9 +179,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateSubtask(int taskId, TaskStatus status, Subtask subtask) {
-        super.updateSubtask(taskId, status, subtask);
+    public boolean updateSubtask(int taskId, TaskStatus status, Subtask subtask) {
+        boolean isAdded = super.updateSubtask(taskId, status, subtask);
         save();
+        return isAdded;
     }
 
     @Override

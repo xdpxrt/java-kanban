@@ -13,9 +13,9 @@ class EpicTest {
     private Subtask task2;
 
     private void createSubtasks() {
-        task1 = new Subtask("Выровнять участок", "Заказать трактор для выравнивания участка"
+        task1 = new Subtask("testName2", "testDescription2"
                 , 180, "10.06.2024 15:00", 1);
-        task2 = new Subtask("Установить фундамент", "Вызвать бригаду по заливке фундамента"
+        task2 = new Subtask("testName3", "testDescription3"
                 , 250, "12.06.2024 12:00", 1);
         taskManager.addSubtask(task1);
         taskManager.addSubtask(task2);
@@ -23,21 +23,17 @@ class EpicTest {
 
     @BeforeEach
     public void beforeEach() {
-        taskManager = Managers.getDefault();
-        taskManager.addEpic(new Epic("Построить дом", "План строительства дома"));
+        taskManager = Managers.getDefaultInMemoryTaskManager();
+        taskManager.addEpic(new Epic("testName1", "testDescription1"));
     }
 
     @Test
     public void emptySubtasksListCheckStatusTest() {
-        taskManager = Managers.getDefault();
-        taskManager.addEpic(new Epic("Построить дом", "План строительства дома"));
         assertEquals(TaskStatus.NEW, taskManager.getTask(1).getTaskStatus());
     }
 
     @Test
     public void allSubtasksAreNewCheckStatusTest() {
-        taskManager = Managers.getDefault();
-        taskManager.addEpic(new Epic("Построить дом", "План строительства дома"));
         createSubtasks();
         assertEquals(TaskStatus.NEW, taskManager.getTask(1).getTaskStatus());
     }

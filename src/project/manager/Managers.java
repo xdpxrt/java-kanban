@@ -1,7 +1,14 @@
 package project.manager;
 
+import java.io.IOException;
+
 public class Managers {
-    public static InMemoryTaskManager getDefault() {
+
+    public static HttpTaskManager getDefault() throws IOException, InterruptedException {
+        return new HttpTaskManager();
+    }
+
+    public static InMemoryTaskManager getDefaultInMemoryTaskManager() {
         return new InMemoryTaskManager();
     }
 

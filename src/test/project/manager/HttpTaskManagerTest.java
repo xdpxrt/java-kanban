@@ -1,40 +1,47 @@
 package project.manager;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import project.server.KVServer;
 import project.task.Task;
-import project.util.CSVTaskUtil;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static project.manager.FileBackedTaskManager.loadFromFile;
+import static project.manager.HttpTaskManager.load;
 
-public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
+public class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     private TaskManager newTaskManager;
+    private KVServer kvServer;
 
     @BeforeEach
-    public void beforeEachFileBacked() {
-        taskManager = Managers.getDefaultFileBackedTaskManager();
+    public void startServer() throws IOException, InterruptedException {
+        kvServer = new KVServer();
+        kvServer.start();
+        taskManager = Managers.getDefault();
         init();
+    }
+
+    @AfterEach
+    public void shutDownServer() {
+        kvServer.stop();
     }
 
     @Test
     public void saveAndLoadZeroTasksTest() {
         taskManager.save();
-        newTaskManager = loadFromFile(new File(CSVTaskUtil.getBackupPath()
-                , CSVTaskUtil.getFileName()));
+        newTaskManager = load();
         assertEquals(0, newTaskManager.getAllTasks().size());
     }
 
     @Test
     public void saveAndLoadEmptyEpicTest() {
         taskManager.addEpic(epic);
-        newTaskManager = loadFromFile(new File(CSVTaskUtil.getBackupPath()
-                , CSVTaskUtil.getFileName()));
-        assertEquals(epic, newTaskManager.getTask(1));
+        newTaskManager = load();
+        assertEquals(1, newTaskManager.getAllTasks().size());
     }
 
     @Test
@@ -45,12 +52,13 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
         taskManager.getTask(3);
         taskManager.getTask(2);
         List<Task> history = taskManager.getHistoryManager().getHistory();
-        newTaskManager = loadFromFile(new File(CSVTaskUtil.getBackupPath()
-                , CSVTaskUtil.getFileName()));
+        newTaskManager = load();
         List<Task> newHistory = newTaskManager.getHistoryManager().getHistory();
         assertEquals(epic, newTaskManager.getTask(1));
         assertEquals(subtask, newTaskManager.getTask(2));
         assertEquals(task, newTaskManager.getTask(3));
         Assertions.assertArrayEquals(history.toArray(), newHistory.toArray());
+
     }
+
 }

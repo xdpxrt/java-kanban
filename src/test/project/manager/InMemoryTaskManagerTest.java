@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @BeforeEach
     public void beforeEachInMemory() {
-        taskManager = Managers.getDefault();
+        taskManager = Managers.getDefaultInMemoryTaskManager();
         init();
     }
 }

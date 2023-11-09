@@ -8,31 +8,31 @@ import project.task.TaskStatus;
 import java.util.List;
 
 public interface TaskManager {
-    void addTask(Task task);
+    boolean addTask(Task task); //POST /tasks/task
 
-    void addEpic(Epic epic);
+    void addEpic(Epic epic); //POST /tasks/epic
 
-    void addSubtask(Subtask subtask);
+    boolean addSubtask(Subtask subtask); //POST /tasks/subtask/?id=
 
-    List<Task> getAllTasks();
+    List<Task> getAllTasks(); //GET /tasks
 
-    Task getTask(Integer taskId);
+    Task getTask(Integer taskId); // GET /tasks/?id=
 
-    List<Task> getSubtasksByEpic(Integer epicId);
+    List<Task> getSubtasksByEpic(Integer epicId); //GET /tasks/epic/getSubtasks
 
-    void removeAllTasks();
+    void removeAllTasks(); // DELETE /tasks
 
-    void removeTask(Integer taskId);
+    void removeTask(Integer taskId); //DELETE /tasks/?id=
 
-    void updateTask(int taskId, TaskStatus status, Task task);
+    boolean updateTask(int taskId, TaskStatus status, Task task); //POST /tasks/task/?id=&status=
 
-    void updateEpic(int taskId, Epic epic);
+    void updateEpic(int taskId, Epic epic); //POST /tasks/epic/?id=
 
-    void updateSubtask(int taskId, TaskStatus status, Subtask subtask);
+    boolean updateSubtask(int taskId, TaskStatus status, Subtask subtask); //POST /tasks/subtask/?id=&status=
 
-    HistoryManager getHistoryManager();
+    HistoryManager getHistoryManager(); //GET /tasks/history
 
-    List<Task> getPrioritizedTasks();
+    List<Task> getPrioritizedTasks(); //GET /tasks/priority
 }
 
 
