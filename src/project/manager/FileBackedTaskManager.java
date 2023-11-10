@@ -94,7 +94,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         if (ownedEpic.getEndTime() == null || subtask.getEndTime().isAfter(ownedEpic.getEndTime())) {
                             ownedEpic.setEndTime(subtask.getEndTime());
                         }
-
                     }
             }
         }

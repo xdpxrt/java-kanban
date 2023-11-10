@@ -1,5 +1,7 @@
 package project.server;
 
+import project.util.ManagerSaveException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,18 +15,23 @@ public class KVTaskClient {
     private final HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
 
 
-    public KVTaskClient(URI uri) throws IOException, InterruptedException {
+    public KVTaskClient(URI uri) {
         this.uri = uri;
         String registerURI = uri.toString() + "/register";
         HttpRequest register = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(registerURI))
                 .build();
-        HttpResponse<String> response = client.send(register, handler);
-        this.apiToken = response.body();
+        HttpResponse<String> response;
+        try {
+            response = client.send(register, handler);
+            this.apiToken = response.body();
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Ошибка клиента: " + e.getMessage());
+        }
     }
 
-    public void put(String key, String json) throws IOException, InterruptedException {
+    public void put(String key, String json) {
         String saveURI = uri.toString() + "/save/" + key + "?API_TOKEN=" + apiToken;
         HttpRequest save = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(json))
@@ -43,16 +50,17 @@ public class KVTaskClient {
         } catch (IOException | InterruptedException e) {
             System.out.println("Во время выполнения запроса ресурса по url-адресу: '" + saveURI + "' возникла ошибка.\n"
                     + "Проверьте, пожалуйста, адрес и повторите попытку.");
+            throw new ManagerSaveException("Ошибка клиента: " + e.getMessage());
         }
     }
 
-    public String load(String key) throws IOException, InterruptedException {
+    public String load(String key) {
         String loadURI = uri.toString() + "/load/" + key + "?API_TOKEN=" + apiToken;
         HttpRequest load = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(loadURI))
                 .build();
-        String value = null;
+        String value;
         try {
             HttpResponse<String> response = client.send(load, handler);
             int status = response.statusCode();
@@ -69,6 +77,7 @@ public class KVTaskClient {
         } catch (IOException | InterruptedException e) {
             System.out.println("Во время выполнения запроса ресурса по url-адресу: '" + loadURI + "' возникла ошибка.\n"
                     + "Проверьте, пожалуйста, адрес и повторите попытку.");
+            throw new ManagerSaveException("Ошибка клиента: " + e.getMessage());
         }
         return value;
     }

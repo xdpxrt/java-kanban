@@ -1,14 +1,15 @@
 package project.server;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+import project.util.ManagerSaveException;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpServer;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class KVServer {
     public static final int PORT = 8078;
@@ -24,7 +25,7 @@ public class KVServer {
         server.createContext("/load", this::load);
     }
 
-    private void load(HttpExchange exchange) throws IOException {
+    private void load(HttpExchange exchange) {
         try (exchange) {
             System.out.println("\n/load");
             if (!hasAuth(exchange)) {
@@ -45,10 +46,12 @@ public class KVServer {
                 System.out.println("/save ждёт GET-запрос, а получил: " + exchange.getRequestMethod());
                 exchange.sendResponseHeaders(405, 0);
             }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка загрузки файла: " + e.getMessage());
         }
     }
 
-    private void save(HttpExchange exchange) throws IOException {
+    private void save(HttpExchange exchange) {
         try (exchange) {
             System.out.println("\n/save");
             if (!hasAuth(exchange)) {
@@ -76,10 +79,12 @@ public class KVServer {
                 System.out.println("/save ждёт POST-запрос, а получил: " + exchange.getRequestMethod());
                 exchange.sendResponseHeaders(405, 0);
             }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка сохранения файла: " + e.getMessage());
         }
     }
 
-    private void register(HttpExchange exchange) throws IOException {
+    private void register(HttpExchange exchange) {
         try (exchange) {
             System.out.println("\n/register");
             if ("GET".equals(exchange.getRequestMethod())) {
@@ -88,6 +93,8 @@ public class KVServer {
                 System.out.println("/register ждёт GET-запрос, а получил " + exchange.getRequestMethod());
                 exchange.sendResponseHeaders(405, 0);
             }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка регистрации: " + e.getMessage());
         }
     }
 
