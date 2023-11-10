@@ -48,15 +48,11 @@ public class HttpTaskManager extends FileBackedTaskManager {
         if (!getHistoryManager().getHistory().isEmpty()) {
             historyAsString = CSVTaskUtil.historyTostring(getHistoryManager());
         } else historyAsString = EMPTY_HISTORY;
-        try {
-            client.put(TASKS_KEY, tasksToJson);
-            client.put(EPICS_KEY, epicsToJson);
-            client.put(SUBTASKS_KEY, subtasksToJson);
-            client.put(HISTORY_KEY, historyAsString);
-            client.put(ID_KEY, String.valueOf(getId()));
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        client.put(TASKS_KEY, tasksToJson);
+        client.put(EPICS_KEY, epicsToJson);
+        client.put(SUBTASKS_KEY, subtasksToJson);
+        client.put(HISTORY_KEY, historyAsString);
+        client.put(ID_KEY, String.valueOf(getId()));
     }
 
     public static TaskManager load() {
